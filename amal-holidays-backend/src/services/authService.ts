@@ -18,7 +18,9 @@ export const registerUser = async (
 
     const user = await createUser(name, email, hashedPassword, role);
 
-    return user;
+    const { password: _, ...safeUser } = user;
+
+    return safeUser;
 };
 
 export const loginUser =  async (email: string, password: string) => {
@@ -40,5 +42,7 @@ export const loginUser =  async (email: string, password: string) => {
         { expiresIn: "1d" }
     );
 
-    return { user, token };
+    const { password: _, ...safeUser } = user;
+
+    return { safeUser, token };
 };
