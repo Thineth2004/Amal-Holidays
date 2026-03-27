@@ -1,7 +1,7 @@
 import { pool } from "../config/db";
 
 // Create Tour
-export const createTourPackageRepo = async (data: any) => {
+export const createPackageRepo = async (data: any) => {
     const {
         title,
         description,
