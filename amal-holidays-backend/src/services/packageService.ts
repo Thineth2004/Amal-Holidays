@@ -17,6 +17,6 @@ export const getAvailableTours = async () => {
     return await getAvailableTourPackages();
 };
 
-export const getTourPackage = async (id: number) => {
+export const getTourById = async (id: number) => {
     return await getTourPackageById(id);
 };
