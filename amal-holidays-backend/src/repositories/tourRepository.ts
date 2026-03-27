@@ -1,7 +1,7 @@
 import { pool } from "../config/db";
 
 // Create Tour
-export const createTourPackage = async (data: any) => {
+export const createTourPackageRepo = async (data: any) => {
     const {
         title,
         description,
@@ -24,7 +24,7 @@ export const createTourPackage = async (data: any) => {
 };
 
 // Get all tours
-export const getAllTourPackages = async () => {
+export const getAllPackagesRepo = async () => {
     const result = await pool.query(
         `SELECT * FROM tour_package ORDER BY start_date ASC`
     );
@@ -32,7 +32,7 @@ export const getAllTourPackages = async () => {
 };
 
 // Get available tours
-export const getAvailableTourPackages = async () => {
+export const getAvailablePackagesRepo = async () => {
     const result = await pool.query(
         `SELECT * FROM tour_package WHERE available_slots > 0`
     );
@@ -40,7 +40,7 @@ export const getAvailableTourPackages = async () => {
 };
 
 // Get single tour 
-export const getTourPackageById = async (id: number) => {
+export const getPackageByIdRepo = async (id: number) => {
     const result = await pool.query(
         `SELECT * FROM tour_package WHERE package_id = $1`,
         [id]
