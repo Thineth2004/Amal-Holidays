@@ -1,22 +1,22 @@
 import {
-    createTourPackage,
-    getAllTourPackages,
-    getAvailableTourPackages,
-    getTourPackageById,
+    createPackageRepo,
+    getAllPackagesRepo,
+    getAvailablePackagesRepo,
+    getPackageByIdRepo,
 } from "../repositories/tourRepository";
 
-export const createTour = async (data: any) => {
-    return await createTourPackage(data);
+export const createPackage = async (data: any) => {
+    return await createPackageRepo(data);
 };
 
-export const getAllTours = async () => {
-    return await getAllTourPackages();
+export const getAllPackages = async () => {
+    return await getAllPackagesRepo();
 };
 
-export const getAvailableTours = async () => {
-    return await getAvailableTourPackages();
+export const getAvailablePackages = async () => {
+    return await getAvailablePackagesRepo();
 };
 
-export const getTourById = async (id: number) => {
-    return await getTourPackageById(id);
+export const getPackageById = async (id: number) => {
+    return await getPackageByIdRepo(id);
 };
