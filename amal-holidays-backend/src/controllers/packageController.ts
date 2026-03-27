@@ -7,7 +7,7 @@ import {
 } from "../services/packageService";
 
 // Manager 
-export const createTourPackageController =  async (req: Request, res: Response) => {
+export const createPackageController =  async (req: Request, res: Response) => {
     try {
         const pkg = await createPackage(req.body);
         res.status(201).json(pkg);
