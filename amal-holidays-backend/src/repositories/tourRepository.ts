@@ -34,8 +34,15 @@ export const getAllPackagesRepo = async () => {
 // Get available tours
 export const getAvailablePackagesRepo = async () => {
     const result = await pool.query(
-        `SELECT * FROM tour_package WHERE available_slots > 0`
-    );
+        `SELECT
+            tp.*,
+            (tp.end_date - tp.start_date) AS duration
+        FROM tour_package tp
+        WHERE tp.available_slots > 0
+            AND tp.start_date >= CURRENT_DATE
+        ORDER BY tp.start_date ASC
+    `);
+    
     return result.rows;
 };
 
