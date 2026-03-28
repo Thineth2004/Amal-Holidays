@@ -7,7 +7,7 @@ export const createPackageRepo = async (data: any) => {
         description,
         price,
         capacity,
-        available_seats,
+        available_slots,
         start_date,
         end_date,
     } = data;
@@ -17,7 +17,7 @@ export const createPackageRepo = async (data: any) => {
         (title, description, duration, price, capacity, available_seats, start_date, end_date)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
         RETURNING *`,
-        [title, description, price, capacity, available_seats, start_date, end_date]
+        [title, description, price, capacity, available_slots, start_date, end_date]
     );
 
     return result.rows[0];
