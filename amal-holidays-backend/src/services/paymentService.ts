@@ -2,7 +2,12 @@ import { pool } from "../config/db";
 import { createPaymentRepo } from "../repositories/paymentRepository";
 
 export const createPayment = async (data: any) => {
-    const { booking_id, amount } = data;
+    const { booking_id, amount, payment_method } = data;
+
+    const allowMethods = ['Credit Card', 'Bank Transfer', 'Online Gateway'];
+    if (!allowMethods.includes(payment_method)) {
+        throw new Error("Invalid payment method selected.");
+    }
 
     const result = await pool.query(
         `SELECT total_price, status FROM booking WHERE booking_id = $1`,
