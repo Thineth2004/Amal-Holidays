@@ -9,4 +9,4 @@ export const createPaymentController = async (req: any, res: Response) => {
     } catch (error: any) {
         res.status(400).json({ message: error.message });
     };
-}
+};
