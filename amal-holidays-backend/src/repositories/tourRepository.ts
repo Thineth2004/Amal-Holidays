@@ -37,8 +37,11 @@ export const getAvailablePackagesRepo = async () => {
     const result = await pool.query(
         `SELECT
             tp.*,
+            d.name AS destination_name,
             (tp.end_date - tp.start_date) AS duration
         FROM tour_package tp
+        JOIN destination d
+            ON tp.destination_id = d.destination_id
         WHERE tp.available_slots > 0
             AND tp.start_date >= CURRENT_DATE
         ORDER BY tp.start_date ASC
