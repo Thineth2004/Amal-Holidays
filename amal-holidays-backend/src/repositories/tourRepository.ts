@@ -8,16 +8,17 @@ export const createPackageRepo = async (data: any) => {
         price,
         capacity,
         available_slots,
+        destination_id,
         start_date,
         end_date,
     } = data;
 
     const result = await pool.query(
         `INSERT INTO tour_package
-        (title, description, duration, price, capacity, available_seats, start_date, end_date)
+        (title, description, price, capacity, available_slots, destination_id, start_date, end_date)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
         RETURNING *`,
-        [title, description, price, capacity, available_slots, start_date, end_date]
+        [title, description, price, capacity, available_slots, destination_id, start_date, end_date]
     );
 
     return result.rows[0];
