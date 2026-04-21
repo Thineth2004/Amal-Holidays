@@ -3,6 +3,7 @@ import authRoutes from "./routes/authRoutes";
 import testRoutes from "./routes/testRoutes";
 import packageRoutes from "./routes/packageRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
+import bookingRoutes from "./routes/bookingRoutes";
 
 const app = express();
 
@@ -15,5 +16,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/packages", packageRoutes);
 
 app.use("/api/payments", paymentRoutes);
+
+app.use("/api/bookings", bookingRoutes);
 
 export default app;
