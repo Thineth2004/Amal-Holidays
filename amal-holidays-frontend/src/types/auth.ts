@@ -8,4 +8,5 @@ export interface User {
 export interface AuthContextType {
     user: User | null;
     login: (data: { user: User; token: string }) => void;
+    logout: () => void;
 }
