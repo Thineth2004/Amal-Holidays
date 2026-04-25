@@ -21,4 +21,10 @@ export default function Login() {
             }
         }
     };
+
+    return (
+        <div className="flex h-screen justify-center items-center">
+            Hello, I'm Thineth
+        </div>
+    );
 }
