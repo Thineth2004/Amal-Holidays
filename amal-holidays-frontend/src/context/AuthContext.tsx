@@ -4,9 +4,16 @@ import type { User, AuthContextType } from "../types/auth";
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(
-        JSON.parse(localStorage.getItem("user") || "null")
-    );
+    const [user, setUser] = useState(() => {
+        console.log("Checking localStorage...");
+        const saved = localStorage.getItem("user");
+        if (!saved || saved === "undefined") return null;
+        try {
+            return JSON.parse(saved);
+        } catch {
+            return null;
+        }
+    });
 
     const login = (data: { user: User; token:string }) => {
         localStorage.setItem("token", data.token);
