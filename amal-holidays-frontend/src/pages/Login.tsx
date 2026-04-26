@@ -67,7 +67,32 @@ export default function Login() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
+
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
+                            <input
+                                type="password"
+                                placeholder="••••••••"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-sky-200 transition-all active:scale-95"
+                        >
+                            Sign In
+                        </button>
                     </form>
+
+                    <p className="text-center text-gray-500 mt-8 text-sm">
+                        New to Amal Holidays? <span className="text-sky-600 font-semibold cursor-pointer hover:underline">
+                            Create an account
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>
