@@ -17,9 +17,8 @@ export default function Login() {
             login(res.data);
             navigate("/dashboard");
         } catch (err: any) {
-            if (err.response?.status === 401) {
-                setError("Invalid Email or Password. Please check again.");
-            }
+            const message = err.response?.data?.message || "Invalid Email or Password.";
+            setError(message);
         }
     };
 
@@ -41,7 +40,7 @@ export default function Login() {
                 </div>
             </div>
 
-            {/* LEFT SIDE */}
+            {/* RIGHT SIDE */}
             <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 bg-gray-50">
                 <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
                     <div className="text-center mb-8">
@@ -58,15 +57,15 @@ export default function Login() {
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                            <input
+                                type="email"
+                                placeholder="youremail@example.com"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
                         </div>
-                        <input
-                            type="email"
-                            placeholder="youremail@example.com"
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
