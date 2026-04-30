@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, type ReactNode } from "react";
+import toast from "react-hot-toast";
 import api from "../api/axiosInstance";
 import type { User, LoginResponse } from "../types/auth";
 import { AuthContext } from "./AuthContext";
@@ -28,10 +29,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
       } catch (error) {
         console.error("Failed to parse stored auth data:", error);
+        toast.error("Session data is corrupted. Please log in again.");
         // Clear corrupted data
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-      } finally {
+      }
+ finally {
         setLoading(false);
       }
     };
@@ -61,30 +64,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    try {
-      const response = await api.post<LoginResponse>("/api/auth/login", { email, password });
-      const { token: newToken, safeUser } = response.data;
+      try {
+          const response = await api.post<LoginResponse>("/api/auth/login", { email, password });
+          const { token: newToken, safeUser } = response.data;
 
-      localStorage.setItem("token", newToken);
-      localStorage.setItem("user", JSON.stringify(safeUser));
+          localStorage.setItem("token", newToken);
+          localStorage.setItem("user", JSON.stringify(safeUser));
 
-      setToken(newToken);
-      setUser(safeUser);
-    } catch (error: unknown) {
-      const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Login failed. Please try again.";
-      throw new Error(message, { cause: error });
-    }
+          setToken(newToken);
+          setUser(safeUser);
+      } catch (error: unknown) {
+          const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Login failed. Please try again.";
+          throw new Error(message, { cause: error });
+      }
+  }, []);
+
+  const register = useCallback(async (name: string, email: string, password: string, role: string) => {
+      try {
+          await api.post("/api/auth/register", { name, email, password, role });
+      } catch (error: unknown) {
+          const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Registration failed. Please try again.";
+          throw new Error(message, { cause: error });
+      }
   }, []);
 
   const contextValue = useMemo(() => ({
-    user,
-    token,
-    loading,
-    login,
-    logout,
-    isAuthenticated: !!token
-  }), [user, token, loading, login, logout]);
-
+      user,
+      token,
+      loading,
+      login,
+      register,
+      logout,
+      isAuthenticated: !!token
+  }), [user, token, loading, login, register, logout]);
   return (
     <AuthContext.Provider value={contextValue}>
       {children}
