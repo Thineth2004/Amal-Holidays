@@ -4,7 +4,7 @@ import React, { useState } from 'react';
  * Wanderlust - Log In Component (Desktop Optimized)
  * Features: Alpine aesthetic, glassmorphism form card, and social auth buttons.
  */
-const LogIn: React.FC = () => {
+const Login: React.FC = () => {
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -100,4 +100,4 @@ const LogIn: React.FC = () => {
   );
 };
 
-export default LogIn;
+export default Login;
