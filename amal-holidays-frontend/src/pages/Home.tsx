@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import toast from 'react-hot-toast';
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,6 +48,11 @@ const Home = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    if (searchQuery) {
+      toast.success(`Searching for adventures in ${searchQuery}...`);
+    } else {
+      toast.error('Please enter a destination to search.');
+    }
     console.log('Searching for:', searchQuery);
     setShowSuggestions(false);
   };
