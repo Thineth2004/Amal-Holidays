@@ -1,99 +1,103 @@
-import api from "../api/axios";
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
 
-export default function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const { login } = useAuth();
-    const navigate = useNavigate();
+/**
+ * Wanderlust - Log In Component (Desktop Optimized)
+ * Features: Alpine aesthetic, glassmorphism form card, and social auth buttons.
+ */
+const LogIn: React.FC = () => {
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+  });
 
-    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            const res = await api.post("auth/login", { email, password });
-            login(res.data);
-            navigate("/dashboard");
-        } catch (err: any) {
-            const message = err.response?.data?.message || "Invalid Email or Password.";
-            setError(message);
-        }
-    };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { type, value } = e.target;
+    const field = type === 'email' ? 'email' : 'password';
+    setCredentials((prev) => ({ ...prev, [field]: value }));
+  };
 
-    return (
-        <div className="flex h-screen w-full font-sans">
-            {/* LEFT SIDE */}
-            <div
-                className="hidden md:flex md:w-1/2 bg-cover bg-center relative"
-                style={{ backgroundImage:
-                    "url('https://images.unsplash.com/photo-1720945489949-2323f3f2f8bc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"
-                }}
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Login attempt with:', credentials);
+  };
+
+  return (
+    <main className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div className="fixed inset-0 z-0">
+        <img
+          className="w-full h-full object-cover"
+          src="/images/login-bg.jpg"
+          alt="Tropical beach sunrise"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
+      </div>
+
+      {/* Login Form Container - Reduced max-width for better desktop focus */}
+      <div className="relative z-10 w-full max-w-[400px] px-6">
+        {/* Padding reduced from p-12 to p-8 */}
+        <div className="bg-white/70 backdrop-blur-2xl border border-white/30 rounded-[2rem] p-8 shadow-2xl">
+          
+          <div className="mb-8 text-center">
+            {/* Scaled from 3xl to 2xl */}
+            <h1 className="text-2xl font-bold text-[#1b1c1c] mb-1.5">Welcome Back</h1>
+            <p className="text-sm text-[#414754]">Continue your journey to <span className='font-nav-md'>Amal Holidays</span></p>
+          </div>
+
+          {/* space-y-6 reduced to space-y-4 */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label className="font-bold text-xs uppercase tracking-wide text-[#1b1c1c] block px-1">Email Address</label>
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#717786] text-lg">mail</span>
+                <input
+                  className="w-full bg-white/50 border border-[#c1c6d7] rounded-full py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#0059bb] focus:border-transparent transition-all outline-none text-sm"
+                  placeholder="name@example.com"
+                  type="email"
+                  value={credentials.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center px-1">
+                <label className="font-bold text-xs uppercase tracking-wide text-[#1b1c1c]">Password</label>
+                <a className="text-[10px] font-bold text-[#0059bb] hover:underline uppercase tracking-tighter" href="/password-reset">Forgot?</a>
+              </div>
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#717786] text-lg">lock</span>
+                <input
+                  className="w-full bg-white/50 border border-[#c1c6d7] rounded-full py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#0059bb] focus:border-transparent transition-all outline-none text-sm"
+                  placeholder="••••••••"
+                  type="password"
+                  value={credentials.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* CTA Button - py-4 reduced to py-3, text-lg to text-base */}
+            <button
+              type="submit"
+              className="w-full bg-[#0059bb] py-3 rounded-full text-white font-bold text-base shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all mt-2"
             >
-                <div className="absolute inset-0 bg-sky-900/30 backdrop-blur-[1px]"></div>
-                <div className="relative z-10 p-12 self-end text-white">
-                    <h1 className="text-5xl font-bold mb-4">Amal Holidays</h1>
-                    <p className="text-xl text-sky-50 font-light italic">
-                        "Your journey to the heart of Sri Lanka begins here."
-                    </p>
-                </div>
-            </div>
+              Log In
+            </button>
 
-            {/* RIGHT SIDE */}
-            <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 bg-gray-50">
-                <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-slate-800">Welcome Back</h2>
-                        <p className="text-gray-500 mt-2">Log in to manage your adventures</p>
-                    </div>
-
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        {error && (
-                            <div className="bg-orange-50 text-orange-600 p-3 rounded-lg text-sm border border-orange-200">
-                                {error}
-                            </div>
-                        )}
-
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
-                            <input
-                                type="email"
-                                placeholder="youremail@example.com"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-sky-200 transition-all active:scale-95"
-                        >
-                            Sign In
-                        </button>
-                    </form>
-
-                    <p className="text-center text-gray-500 mt-8 text-sm">
-                        New to Amal Holidays? <span className="text-sky-600 font-semibold cursor-pointer hover:underline">
-                            Create an account
-                        </span>
-                    </p>
-                </div>
-            </div>
+            <p className="text-center text-sm text-[#414754] pt-2">
+              Don't have an account? <a className="text-[#0059bb] font-bold hover:underline ml-1" href="/signup">Sign up</a>
+            </p>
+          </form>
         </div>
-    );
-}
+      </div>
+    </main>
+  );
+};
+
+export default LogIn;
