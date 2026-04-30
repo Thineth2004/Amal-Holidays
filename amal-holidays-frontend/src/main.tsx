@@ -7,6 +7,6 @@ import { Toaster } from 'react-hot-toast'
 createRoot(document.getElementById('root')!).render(
   <AuthProvider>
     <App />
-    <Toaster />
+    <Toaster position='bottom-center'/>
   </AuthProvider>,
 )
