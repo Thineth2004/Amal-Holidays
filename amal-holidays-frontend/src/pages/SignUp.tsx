@@ -28,10 +28,10 @@ const SignUp: React.FC = () => {
     try {
       // Defaulting role to 'Tourist' as this is a signup page
       await register(formData.fullName, formData.email, formData.password, 'Tourist');
-      toast.success('Account created successfully! Please log in.');
+      toast.success('Account created successfully!');
       navigate('/signin');
-    } catch (err: any) {
-      toast.error(err.message || 'Registration failed');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Registration failed');
     } finally {
       setIsSubmitting(false);
     }
