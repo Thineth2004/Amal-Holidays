@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import testRoutes from "./routes/testRoutes";
 import packageRoutes from "./routes/packageRoutes";
@@ -9,6 +10,7 @@ import assignmentRoutes from "./routes/assignmentRoutes";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/api/test", testRoutes);
