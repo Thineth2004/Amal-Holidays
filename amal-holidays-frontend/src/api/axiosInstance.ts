@@ -5,6 +5,7 @@ const api = axios.create({
     baseURL: backend_url,
 });
 
+// Request interceptor for adding the bearer token
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
@@ -14,6 +15,19 @@ api.interceptors.request.use(
         return config;
     },
     (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Response interceptor for handling 401 errors
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            // Optional: window.location.href = "/login";
+        }
         return Promise.reject(error);
     }
 );

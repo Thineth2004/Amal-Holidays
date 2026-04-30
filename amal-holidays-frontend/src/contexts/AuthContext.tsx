@@ -1,6 +1,6 @@
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, useMemo, useCallback, type ReactNode } from "react";
 import api from "../api/axiosInstance";
-import { User, AuthContextType, LoginResponse } from "../types/auth";
+import type { User, AuthContextType, LoginResponse } from "../types/auth";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -9,43 +9,85 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const storedToken = localStorage.getItem("token");
-        const storedUser = localStorage.getItem("user");
-
-        if (storedToken && storedUser) {
-            setToken(storedToken);
-            setUser(JSON.parse(storedUser));
-        }
-        setLoading(false);
-    }, []);
-
-    const login = async (email: string, password: string) => {
-        try {
-            const response = await api.post<LoginResponse>("/api/auth/login", { email, password });
-            const { token, safeUser } = response.data;
-
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(safeUser));
-
-            setToken(token);
-            setUser(safeUser);
-        } catch (error: any) {
-            throw new Error(error.response?.data?.message || "Login failed");
-        }
-    };
-
-    const logout = () => {
+    const logout = useCallback(() => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setToken(null);
         setUser(null);
-    };
+    }, []);
 
-    const isAuthenticated = !!token;
+    // Initialize auth from localStorage
+    useEffect(() => {
+        const initializeAuth = () => {
+            try {
+                const storedToken = localStorage.getItem("token");
+                const storedUser = localStorage.getItem("user");
+
+                if (storedToken && storedUser) {
+                    setToken(storedToken);
+                    setUser(JSON.parse(storedUser));
+                }
+            } catch (error) {
+                console.error("Failed to parse stored auth data:", error);
+                // Clear corrupted data
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initializeAuth();
+    }, []);
+
+    // Sync state across tabs
+    useEffect(() => {
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === "token" || e.key === "user") {
+                const storedToken = localStorage.getItem("token");
+                const storedUser = localStorage.getItem("user");
+                
+                if (storedToken && storedUser) {
+                    setToken(storedToken);
+                    setUser(JSON.parse(storedUser));
+                } else {
+                    setToken(null);
+                    setUser(null);
+                }
+            }
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+        return () => window.removeEventListener("storage", handleStorageChange);
+    }, []);
+
+    const login = useCallback(async (email: string, password: string) => {
+        try {
+            const response = await api.post<LoginResponse>("/api/auth/login", { email, password });
+            const { token: newToken, safeUser } = response.data;
+
+            localStorage.setItem("token", newToken);
+            localStorage.setItem("user", JSON.stringify(safeUser));
+
+            setToken(newToken);
+            setUser(safeUser);
+        } catch (error: any) {
+            const message = error.response?.data?.message || "Login failed. Please try again.";
+            throw new Error(message);
+        }
+    }, []);
+
+    const contextValue = useMemo(() => ({
+        user,
+        token,
+        loading,
+        login,
+        logout,
+        isAuthenticated: !!token
+    }), [user, token, loading, login, logout]);
 
     return (
-        <AuthContext.Provider value={{ user, token, loading, login, logout, isAuthenticated }}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );
