@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
+import { useAuth } from '../hooks/useAuth';
 
 /**
  * Wanderlust - Log In Component (Desktop Optimized)
  * Features: Alpine aesthetic, glassmorphism form card, and social auth buttons.
  */
 const Login: React.FC = () => {
+  const { login, isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, loading, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { type, value } = e.target;
@@ -16,10 +28,27 @@ const Login: React.FC = () => {
     setCredentials((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt with:', credentials);
+    setIsSubmitting(true);
+
+    try {
+      await login(credentials.email, credentials.password);
+      toast.success('Login successful!');
+    } catch (err: any) {
+      toast.error(err.message || 'Login failed');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0059bb]"></div>
+      </div>
+    );
+  }
 
   return (
     <main className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
@@ -53,12 +82,13 @@ const Login: React.FC = () => {
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#717786] text-lg">mail</span>
                 <input
-                  className="w-full bg-white/50 border border-[#c1c6d7] rounded-full py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#0059bb] focus:border-transparent transition-all outline-none text-sm"
+                  className="w-full bg-white/50 border border-[#c1c6d7] rounded-full py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#0059bb] focus:border-transparent transition-all outline-none text-sm disabled:opacity-50"
                   placeholder="name@example.com"
                   type="email"
                   value={credentials.email}
                   onChange={handleInputChange}
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -72,12 +102,13 @@ const Login: React.FC = () => {
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#717786] text-lg">lock</span>
                 <input
-                  className="w-full bg-white/50 border border-[#c1c6d7] rounded-full py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#0059bb] focus:border-transparent transition-all outline-none text-sm"
+                  className="w-full bg-white/50 border border-[#c1c6d7] rounded-full py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#0059bb] focus:border-transparent transition-all outline-none text-sm disabled:opacity-50"
                   placeholder="••••••••"
                   type="password"
                   value={credentials.password}
                   onChange={handleInputChange}
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -85,9 +116,10 @@ const Login: React.FC = () => {
             {/* CTA Button - py-4 reduced to py-3, text-lg to text-base */}
             <button
               type="submit"
-              className="w-full bg-[#0059bb] py-3 rounded-full text-white font-bold text-base shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all mt-2"
+              disabled={isSubmitting}
+              className="w-full bg-[#0059bb] py-3 rounded-full text-white font-bold text-base shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Log In
+              {isSubmitting ? 'Logging In...' : 'Log In'}
             </button>
 
             <p className="text-center text-sm text-[#414754] pt-2">
