@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 /**
  * Wanderlust - Password Reset Component (Desktop Refined)
@@ -18,7 +19,7 @@ const PasswordReset: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Resetting password for:', formData.email, 'with code:', formData.code);
+    toast.success('Password reset request submitted successfully!');
   };
 
   return (
