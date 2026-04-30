@@ -35,8 +35,8 @@ const Login: React.FC = () => {
     try {
       await login(credentials.email, credentials.password);
       toast.success('Login successful!');
-    } catch (err: any) {
-      toast.error(err.message || 'Login failed');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Login failed');
     } finally {
       setIsSubmitting(false);
     }
