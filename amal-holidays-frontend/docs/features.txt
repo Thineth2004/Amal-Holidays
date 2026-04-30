@@ -1,0 +1,410 @@
+
+
+🧍 TOURIST (≈ 30 use cases)
+
+Account & Identity (6)
+
+1. Register account
+
+
+2. Login
+
+
+3. Logout
+
+
+4. Reset password
+
+
+5. Update profile
+
+
+6. Deactivate account
+
+
+
+Tour Discovery (7)
+
+7. View tour packages
+
+
+8. View tour package details
+
+
+9. Search tour packages
+
+
+10. Filter tour packages
+
+
+11. View destinations
+
+
+12. View itinerary
+
+
+13. View pricing details
+
+
+
+Booking – Tour (8)
+
+14. Select tour package
+
+
+15. Select travel date
+
+
+16. Select number of travelers
+
+
+17. Customize tour options
+
+
+18. Confirm tour booking
+
+
+19. View booking details
+
+
+20. Cancel tour booking
+
+
+21. Reschedule tour booking
+
+
+
+Hotel Booking (5)
+
+22. View hotels
+
+
+23. Select hotel
+
+
+24. Select room type
+
+
+25. Book hotel
+
+
+26. Cancel hotel booking
+
+
+
+Payment & Communication (4)
+
+27. Make payment
+
+
+28. View payment confirmation
+
+
+29. Send inquiry
+
+
+30. Receive notifications
+
+
+
+➡️ Tourist = 30
+
+
+---
+
+🧑‍💼 MANAGER / ADMIN (≈ 30 use cases)
+
+Access & Control (4)
+
+31. Login
+
+
+32. Logout
+
+
+33. Change password
+
+
+34. Recover account
+
+
+
+User & Role Management (8)
+
+35. View users
+
+
+36. Create staff accounts
+
+
+37. Update staff accounts
+
+
+38. Deactivate staff accounts
+
+
+39. Assign user roles
+
+
+40. Remove user roles
+
+
+41. Reset user passwords
+
+
+42. View user activity
+
+
+
+Tour Package Management (8)
+
+43. Create tour package
+
+
+44. Update tour package
+
+
+45. Delete tour package
+
+
+46. Define itinerary
+
+
+47. Set tour pricing
+
+
+48. Set discounts
+
+
+49. Manage availability
+
+
+50. Publish tour package
+
+
+
+Hotel & Resource Management (6)
+
+51. Add hotel
+
+
+52. Update hotel
+
+
+53. Remove hotel
+
+
+54. Manage room types
+
+
+55. Assign tour guide
+
+
+56. Assign driver
+
+
+
+Monitoring & Reports (4)
+
+57. View booking reports
+
+
+58. View revenue reports
+
+
+59. Monitor tour status
+
+
+60. Review customer feedback
+
+
+
+➡️ Manager = 30
+
+
+---
+
+🧾 RESERVATIONIST / STAFF (≈ 18 use cases)
+
+Access (2)
+
+61. Login
+
+
+62. Logout
+
+
+
+Booking Processing (9)
+
+63. View pending bookings
+
+
+64. Verify booking details
+
+
+65. Confirm hotel availability
+
+
+66. Reserve hotel rooms
+
+
+67. Modify reservations
+
+
+68. Cancel reservations
+
+
+69. Update booking status
+
+
+70. Upload confirmation documents
+
+
+71. Notify tourists
+
+
+
+Coordination (7)
+
+72. Contact hotels
+
+
+73. Coordinate with tour guides
+
+
+74. Coordinate with drivers
+
+
+75. Handle special requests
+
+
+76. Update tour schedules
+
+
+77. Escalate issues to manager
+
+
+78. Track reservation progress
+
+
+
+➡️ Staff = 18
+
+
+---
+
+🧑‍✈️ TOUR GUIDE (≈ 12 use cases)
+
+Access (2)
+
+79. Login
+
+
+80. Logout
+
+
+
+Tour Execution (8)
+
+81. View assigned tours
+
+
+82. Accept tour assignment
+
+
+83. View tourist details
+
+
+84. View itinerary
+
+
+85. Start tour
+
+
+86. Update tour progress
+
+
+87. Complete tour
+
+
+88. Report tour issues
+
+
+
+Communication (2)
+
+89. Communicate with manager
+
+
+90. Communicate with tourist
+
+
+
+➡️ Guide = 12
+
+
+---
+
+🚗 DRIVER (≈ 12 use cases)
+
+Access (2)
+
+91. Login
+
+
+92. Logout
+
+
+
+Trip Handling (8)
+
+93. View assigned trips
+
+
+94. Accept trip assignment
+
+
+95. View pickup details
+
+
+96. Start trip
+
+
+97. Update trip status
+
+
+98. Complete trip
+
+
+99. Report vehicle issues
+
+
+100. Confirm passenger pickup
+
+
+
+Coordination (2)
+
+101. Communicate with staff
+
+
+102. Communicate with guide
+
+
+
+➡️ Driver = 12
+
+
+---
+
+🎯 FINAL COUNT (Clean & Compliant)
+
+Actor	Use Cases
+
+Tourist	30
+Manager	30
+Staff	18
+Guide	12
+Driver	12
+TOTAL	102 use cases ✅
