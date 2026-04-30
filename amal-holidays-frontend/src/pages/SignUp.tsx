@@ -1,25 +1,40 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
+import { useAuth } from '../hooks/useAuth';
 
 /**
  * Horizon Ethos - Sign Up Component (Refined Scale)
  * Focus: Retaining Glassmorphism while optimizing for desktop/laptop real estate.
  */
 const SignUp: React.FC = () => {
+  const { register } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     password: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Account creation requested! (API integration coming soon)');
+    setIsSubmitting(true);
+    try {
+      // Defaulting role to 'Tourist' as this is a signup page
+      await register(formData.fullName, formData.email, formData.password, 'Tourist');
+      toast.success('Account created successfully! Please log in.');
+      navigate('/signin');
+    } catch (err: any) {
+      toast.error(err.message || 'Registration failed');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -37,16 +52,13 @@ const SignUp: React.FC = () => {
 
       {/* Main Content */}
       <main className="relative z-10 flex-grow flex items-center justify-center px-6 pt-20">
-        {/* Adjusted padding from p-12 to p-10 and max-width refinement */}
         <div className="w-full max-w-[420px] bg-white/70 backdrop-blur-2xl border border-white/30 rounded-[2rem] px-10 py-6 shadow-2xl">
 
           <div className="text-center mb-5">
-            {/* Scaled down from text-4xl to text-2xl */}
             <h1 className="text-2xl font-bold text-[#1b1c1c] mb-1.5">Begin Your Journey</h1>
             <p className="text-sm text-[#414754]">Join <span className='font-nav-md'>Amal Holidays</span> for exclusive travel serenity</p>
           </div>
 
-          {/* Adjusted space-y-6 to space-y-4 for tighter vertical flow */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name Field */}
             <div className="space-y-1.5">
@@ -57,10 +69,11 @@ const SignUp: React.FC = () => {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-white/50 border border-[#c1c6d7] rounded-full focus:ring-2 focus:ring-[#0059bb] focus:border-[#0059bb] transition-all outline-none text-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-white/50 border border-[#c1c6d7] rounded-full focus:ring-2 focus:ring-[#0059bb] focus:border-[#0059bb] transition-all outline-none text-sm disabled:opacity-50"
                   placeholder="John Doe"
                   type="text"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -74,10 +87,11 @@ const SignUp: React.FC = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-white/50 border border-[#c1c6d7] rounded-full focus:ring-2 focus:ring-[#0059bb] focus:border-[#0059bb] transition-all outline-none text-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-white/50 border border-[#c1c6d7] rounded-full focus:ring-2 focus:ring-[#0059bb] focus:border-[#0059bb] transition-all outline-none text-sm disabled:opacity-50"
                   placeholder="john@horizon.com"
                   type="email"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -91,24 +105,25 @@ const SignUp: React.FC = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-white/50 border border-[#c1c6d7] rounded-full focus:ring-2 focus:ring-[#0059bb] focus:border-[#0059bb] transition-all outline-none text-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-white/50 border border-[#c1c6d7] rounded-full focus:ring-2 focus:ring-[#0059bb] focus:border-[#0059bb] transition-all outline-none text-sm disabled:opacity-50"
                   placeholder="••••••••"
                   type="password"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
 
-            {/* Action Button - Scaled py-4 to py-3 */}
+            {/* Action Button */}
             <button
               type="submit"
-              className="w-full bg-[#0059bb] text-white py-3.5 rounded-full font-bold text-base shadow-lg hover:shadow-xl active:scale-[0.98] transition-all mt-2"
+              disabled={isSubmitting}
+              className="w-full bg-[#0059bb] text-white py-3.5 rounded-full font-bold text-base shadow-lg hover:shadow-xl active:scale-[0.98] transition-all mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Create Account
+              {isSubmitting ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
-          {/* Adjusted margin top from mt-12 to mt-8 */}
           <p className="text-center mt-6 text-sm text-[#414754]">
             Already have an account?
             <a className="text-[#0059bb] font-bold hover:underline ml-1" href="/signin">Sign In</a>
