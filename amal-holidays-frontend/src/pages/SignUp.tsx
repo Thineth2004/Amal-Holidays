@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 /**
  * Horizon Ethos - Sign Up Component (Refined Scale)
@@ -18,7 +19,7 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Account Creation Request:', formData);
+    toast.success('Account creation requested! (API integration coming soon)');
   };
 
   return (
