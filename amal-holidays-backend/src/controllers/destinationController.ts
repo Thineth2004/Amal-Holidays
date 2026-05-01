@@ -12,8 +12,8 @@ export const getDestinations = async (req: Request, res: Response) => {
 
 export const createDestination = async (req: Request, res: Response) => {
   try {
-    const { name, location, description } = req.body;
-    const data = await repo.createDestinationRepo(name, location, description);
+    const { name, location, description, image_uuid } = req.body;
+    const data = await repo.createDestinationRepo(name, location, description, image_uuid);
     res.status(201).json(data);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
