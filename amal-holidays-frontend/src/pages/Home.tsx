@@ -141,11 +141,13 @@ const Home = () => {
 
           {/* Large Main Slot */}
           <div className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-            <img
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              src="/images/placeholders/1.jpeg"
-              alt="Destination 1"
-            />
+            <div className="overflow-hidden w-full h-full">
+              <img
+                className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+                src="/images/placeholders/1.jpeg"
+                alt="Destination 1"
+              />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
             <div className="absolute bottom-3 left-5 p-4 text-white">
               <h3 className="font-label-bold text-2xl drop-shadow-md">Randenigala</h3>
@@ -154,7 +156,9 @@ const Home = () => {
 
           {/* Narrow vertical slot */}
           <div className="row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="/images/placeholders/2.jpeg" alt="Destination 2" />
+            <div className="overflow-hidden w-full h-full">
+              <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src="/images/placeholders/2.jpeg" alt="Destination 2" />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 text-white">
               <h3 className="font-label-bold text-lg drop-shadow-md">Kandy</h3>
@@ -163,7 +167,9 @@ const Home = () => {
 
           {/* Small horizontal slot */}
           <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="/images/placeholders/3.jpeg" alt="Destination 3" />
+            <div className="overflow-hidden w-full h-full">
+              <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src="/images/placeholders/3.jpeg" alt="Destination 3" />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 text-white">
               <h3 className="font-label-bold text-lg drop-shadow-md">Nuwara Eliya</h3>
@@ -172,7 +178,9 @@ const Home = () => {
           
           {/* Small horizontal slot */}
           <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="/images/placeholders/4.jpeg" alt="Destination 4" />
+            <div className="overflow-hidden w-full h-full">
+              <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src="/images/placeholders/4.jpeg" alt="Destination 4" />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-4 text-white">
               <h3 className="font-label-bold text-lg drop-shadow-md">Matale</h3>
