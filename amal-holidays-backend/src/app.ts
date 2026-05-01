@@ -8,8 +8,16 @@ import bookingRoutes from "./routes/bookingRoutes";
 import destinationRoutes from "./routes/destinationRoutes";
 import assignmentRoutes from "./routes/assignmentRoutes";
 import imageRoutes from "./routes/imageRoutes";
+import fs from "fs";
+import path from "path";
 
 const app = express();
+
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
 
 app.use(cors());
 app.use(express.json());
