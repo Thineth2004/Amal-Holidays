@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6",
 		"name": "Amal Holidays Backend API",
-		"description": "Comprehensive API collection for Amal Holidays Backend system, including Auth, Packages, Bookings, Payments, Destinations, and Assignments.",
+		"description": "Comprehensive API collection for Amal Holidays Backend system, including Auth, Packages, Bookings, Payments, Destinations, Assignments, and Public Assets.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -407,6 +407,70 @@
 							]
 						},
 						"description": "Assigns a Guide or Driver to a booking. Checks for availability on the travel date."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Public Assets",
+			"item": [
+				{
+					"name": "Upload Image (Manager)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/public-assets/upload",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public-assets",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Image",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/public-assets/:uuid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"public-assets",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "uuid-here"
+								}
+							]
+						}
 					},
 					"response": []
 				}
