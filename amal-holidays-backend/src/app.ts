@@ -7,6 +7,7 @@ import paymentRoutes from "./routes/paymentRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
 import destinationRoutes from "./routes/destinationRoutes";
 import assignmentRoutes from "./routes/assignmentRoutes";
+import imageRoutes from "./routes/imageRoutes";
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.use("/api/bookings", bookingRoutes);
 
 app.use("/api/destinations", destinationRoutes);
 
-app.use("api/assignments", assignmentRoutes);
+app.use("/api/assignments", assignmentRoutes);
+
+app.use("/api/images", imageRoutes);
 
 export default app;
