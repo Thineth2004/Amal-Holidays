@@ -7,12 +7,12 @@ import { authorize } from '../middlewares/roleMiddleware';
 
 const router = express.Router();
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, uuidv4());
-    }
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, uuidv4());
+  }
 });
 const upload = multer({ storage });
 
