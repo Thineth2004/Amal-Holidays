@@ -413,7 +413,7 @@
 			]
 		},
 		{
-			"name": "Public Assets",
+			"name": "Images",
 			"item": [
 				{
 					"name": "Upload Image (Manager)",
@@ -437,13 +437,13 @@
 							]
 						},
 						"url": {
-							"raw": "{{baseUrl}}/api/public-assets/upload",
+							"raw": "{{baseUrl}}/api/images/upload",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
-								"public-assets",
+								"images",
 								"upload"
 							]
 						}
@@ -455,13 +455,13 @@
 					"request": {
 						"method": "GET",
 						"url": {
-							"raw": "{{baseUrl}}/api/public-assets/:uuid",
+							"raw": "{{baseUrl}}/api/images/:uuid",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
-								"public-assets",
+								"images",
 								":uuid"
 							],
 							"variable": [
