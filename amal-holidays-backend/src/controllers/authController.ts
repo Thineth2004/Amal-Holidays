@@ -4,8 +4,9 @@ import { registerUser, loginUser } from "../services/authService";
 export const register = async (req: Request, res: Response) => {
     try {
         const { name, email, password, role } = req.body;
+        const lowercaseEmail = email.toLowerCase();
 
-        const user = await registerUser(name, email, password, role);
+        const user = await registerUser(name, lowercaseEmail, password, role);
 
         res.status(201).json({
             message: "User registered successfully",
@@ -19,8 +20,9 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
+        const lowercaseEmail = email.toLowerCase();
 
-        const { safeUser, token } = await loginUser(email, password);
+        const { safeUser, token } = await loginUser(lowercaseEmail, password);
 
         res.json({
             message: "Login successful",
