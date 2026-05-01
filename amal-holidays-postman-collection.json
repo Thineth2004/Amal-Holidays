@@ -319,7 +319,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Ella\",\n    \"location\": \"Badulla District\",\n    \"description\": \"Scenic mountain village\"\n}",
+							"raw": "{\n    \"name\": \"Ella\",\n    \"location\": \"Badulla District\",\n    \"description\": \"Scenic mountain village\",\n    \"image_uuid\": \"some-uuid\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
