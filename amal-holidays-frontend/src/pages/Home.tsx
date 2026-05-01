@@ -68,16 +68,16 @@ const Home = () => {
             data-alt="Stunning sunset over a calm ocean with a picturesque wooden pier extending into the water, warm golden and pink hues in the sky"
             src="/images/hero-bg.jpg"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-surface-container-lowest/50"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-surface-container-lowest/10"></div>
         </div>
 
         {/* Content */}
         <div className="relative z-10 text-center max-w-4xl mx-auto flex flex-col gap-md text-white">
           <h1 className="font-headline-xl text-headline-xl text-white drop-shadow-lg">
-            Discover Your Next <br /> Extraordinary Journey
+            Discover Your Next <br /> Extraordinary Holiday
           </h1>
           <p className="font-body-lg text-body-lg text-white/90 drop-shadow-md max-w-2xl mx-auto">
-            Experience the world's most breathtaking destinations with our curated premium travel packages designed for pure serenity.
+            Experience Sri Lanka's most breathtaking destinations with our curated premium travel packages designed for pure serenity.
           </p>
         </div>
 
@@ -131,13 +131,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Destinations (Bento Grid) */}
-      <section className="max-w-container-max mx-auto px-gutter py-xl flex flex-col gap-lg">
+      {/* Featured Destinations */}
+      <section className="max-w-container-max mx-auto px-gutter py-lg flex flex-col gap-lg">
         <div className="flex flex-col gap-xs">
           <h2 className="font-headline-lg text-headline-lg text-on-surface">Featured Destinations</h2>
           <p className="font-body-md text-body-md text-on-surface-variant">Explore our hand-picked locations for your perfect getaway.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-sm md:h-[600px]">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-sm">
 
           {/* Large Item */}
           <div className="md:col-span-8 relative rounded-lg overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)] min-h-[300px]">
@@ -182,9 +182,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Popular Tours (Airbnb-style) */}
-      <section className="bg-surface-container-low w-full">
-        <div className="max-w-container-max mx-auto px-gutter py-xl flex flex-col gap-lg">
+      {/* Popular Tours */}
+      <section className=" w-full">
+        <div className="max-w-container-max mx-auto px-gutter py-lg flex flex-col gap-lg">
           <div className="flex flex-col gap-xs">
             <h2 className="font-headline-lg text-headline-lg text-on-surface">Popular Tours</h2>
             <p className="font-body-md text-body-md text-on-surface-variant">Top-rated experiences tailored for unforgettable memories.</p>
@@ -297,7 +297,7 @@ const Home = () => {
                 </div>
                 <p className="font-body-sm text-body-sm text-on-surface-variant truncate">Japan • 10 Days</p>
                 <div className="mt-1 flex items-center gap-1">
-                  <span className="font-label-bold text-label-bold text-on-surface">$2,800</span>
+                  <span className="font-label-bold text-label-bold text-on-surface">Rs.4,000</span>
                   <span className="font-body-sm text-body-sm text-on-surface-variant">/ person</span>
                 </div>
               </div>
@@ -308,7 +308,7 @@ const Home = () => {
       </section>
 
       {/* Why Choose Us */}
-      <section className="max-w-container-max mx-auto px-gutter py-xl">
+      <section className="max-w-container-max mx-auto px-gutter py-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-lg text-center">
           <div className="flex flex-col items-center gap-sm">
             <div className="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary mb-2 shadow-sm">

@@ -31,7 +31,7 @@ const PasswordReset: React.FC = () => {
           className="w-full h-full object-cover"
           src="/images/reset-password-bg.jpg"
         />
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-black/10"></div>
       </div>
 
       {/* Form Container - Optimized Max-Width */}
