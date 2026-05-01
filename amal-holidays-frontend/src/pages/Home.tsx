@@ -137,48 +137,47 @@ const Home = () => {
           <h2 className="font-headline-lg text-headline-lg text-on-surface">Featured Destinations</h2>
           <p className="font-body-md text-body-md text-on-surface-variant">Explore our hand-picked locations for your perfect getaway.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-[500px]">
 
-          {/* Large Item */}
-          <div className="md:col-span-8 relative rounded-lg overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)] min-h-[300px]">
+          {/* Large Main Slot */}
+          <div className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
             <img
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              data-alt="Aerial view of a stunning turquoise lagoon surrounded by lush green mountains in Bora Bora, pristine white sand beaches visible"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnfLki1M2quwSFBHnTKUPhGWGMsIayZe6V4Dfo_9GYbzKTb3bQCEW5kYOGajsihnuyRGKMiLBLhusUP-0uXb_DvUw5oEPX6weyQ_si1uZD35yJy9FhXHB_TwqI43beDcY6j50NWL46JDenTWnZqu0Z-Gtsvz3DAs1-Q0-jvNmXLSUas4v-22EruPWDBEiwiyORz4FySDg2df9BYJgXjHMjoWEFMI6650ZGtAX4yLW5PKDLfqq4UnlLZVEiQirN5RWN1tgHt84Df7g0"
+              src="/images/placeholders/1.jpeg"
+              alt="Destination 1"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-lg text-white">
-              <h3 className="font-headline-md text-headline-md drop-shadow-md">Maldives Serenity</h3>
-              <p className="font-body-md text-body-md opacity-90 mt-2">Discover overwater bungalows and crystal clear reefs.</p>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+            <div className="absolute bottom-3 left-5 p-4 text-white">
+              <h3 className="font-label-bold text-2xl drop-shadow-md">Randenigala</h3>
             </div>
           </div>
 
-          {/* Small Items Stack */}
-          <div className="md:col-span-4 flex flex-col gap-sm">
-            <div className="flex-1 relative rounded-lg overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)] min-h-[250px]">
-              <img
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                data-alt="Beautiful sunset over the desert dunes of Dubai, warm orange and red colors in the sky, rippled sand texture"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0F-MfFqkZ8g0tN4pFyToWP9NdnkZ05wBPpo32ksg-ehAOQhIuojGdDcf_TgJU44zdIjgNFWv3UwdOwGcc8CKP8Ggv7AqFIyd89JELQvvqI3Cq2JW20Y-nAtAE4F17PymdYiu5xy8JCwLeE6gVgVTszeWs42VpBeSsg_mjqbn4ivHFcVnsq_DVqeTf09QkyNx6c6-1uh2dfRrTuK1FvwQ9vohv5CtJ4-TsIAGsREvgL63FvnP-3s-RaxHOi86_su7O2E-IfE_nVQ-Q"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 p-md text-white">
-                <h3 className="font-label-bold text-label-bold text-lg drop-shadow-md">Dubai Escapes</h3>
-              </div>
-            </div>
-            <div className="flex-1 relative rounded-lg overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)] min-h-[250px]">
-              <img
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                data-alt="Iconic view of Machu Picchu ruins nestled high in the Andes mountains, surrounded by lush green peaks and low-hanging clouds"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvwOk_qywLnVSYbztTPukfsPrS0QBVljdVHQ-EMchoGCIYI_IQniV5WSeuFt8Wh80qbzvn8VZHNC6wA5cmlPu7vny3zpqgRB4fvpLdVwOUT3WXss4bZg-ULMcrp4kNWlvkLAywdgYdxU4QzcOfaEBqVq3I_fypBO1R6s9WXNhetXwjIwoUHMAKKJ7oFBQ58Hk4lbrAWexB1_fc5ieeKGju5WKOjpow7ny-9kkf0pBfcz6T5n8r32jvAEoNTwfnXNxGZhMnc-JR1SXm"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 p-md text-white">
-                <h3 className="font-label-bold text-label-bold text-lg drop-shadow-md">Andes Adventure</h3>
-              </div>
+          {/* Narrow vertical slot */}
+          <div className="row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
+            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="/images/placeholders/2.jpeg" alt="Destination 2" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div className="absolute bottom-0 left-0 p-4 text-white">
+              <h3 className="font-label-bold text-lg drop-shadow-md">Kandy</h3>
             </div>
           </div>
 
+          {/* Small horizontal slot */}
+          <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
+            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="/images/placeholders/3.jpeg" alt="Destination 3" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div className="absolute bottom-0 left-0 p-4 text-white">
+              <h3 className="font-label-bold text-lg drop-shadow-md">Nuwara Eliya</h3>
+            </div>
+          </div>
+          
+          {/* Small horizontal slot */}
+          <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
+            <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="/images/placeholders/4.jpeg" alt="Destination 4" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div className="absolute bottom-0 left-0 p-4 text-white">
+              <h3 className="font-label-bold text-lg drop-shadow-md">Matale</h3>
+            </div>
+          </div>
         </div>
       </section>
 
