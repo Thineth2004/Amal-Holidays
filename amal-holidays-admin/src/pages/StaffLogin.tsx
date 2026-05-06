@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useAuth } from '../contexts/AuthContext';
+import toast, { Toaster } from 'react-hot-toast';
 
 /**
  * Wanderlust - Staff Portal Login (Refined Scale)
@@ -10,18 +13,29 @@ const StaffLogin: React.FC = () => {
     password: '',
   });
 
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAdminCreds((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAdminSignIn = (e: React.FormEvent) => {
+  const handleAdminSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Admin login attempt:', adminCreds.workEmail);
+    try {
+      await login({ email: adminCreds.workEmail, password: adminCreds.password });
+      toast.success('Successfully logged in');
+      navigate('/');
+    } catch (error: unknown) {
+      toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Login failed');
+    }
   };
+
 
   return (
     <main className="relative min-h-screen flex items-center justify-center p-6 overflow-hidden font-['Plus_Jakarta_Sans'] antialiased">
+      <Toaster />
       
       {/* Background layer (Consistent with Wanderlust Theme) */}
       <div className="absolute inset-0 z-0">
@@ -92,16 +106,6 @@ const StaffLogin: React.FC = () => {
               Authorize Access
             </button>
           </form>
-
-          {/* Footer Link */}
-          <div className="mt-4 pt-6 border-t border-black/5">
-            <p className="text-center text-xs text-[#414754] font-medium">
-              Accidentally here? 
-              <a className="text-[#0059bb] font-bold hover:underline ml-1" href="#">
-                Return to Public Site
-              </a>
-            </p>
-          </div>
         </div>
       </div>
     </main>
