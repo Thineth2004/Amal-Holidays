@@ -1,11 +1,20 @@
 import React from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
+import { useAuth } from '../contexts/AuthContext';
 
 /**
  * Wanderlust Sidebar
  * Features: Fixed glassmorphism, active state styles, and Material Symbols.
  */
 const Sidebar: React.FC = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   const navItems = [
     { label: 'Dashboard', icon: 'grid_view', path: '/' },
     { label: 'Bookings', icon: 'event_available', path: '/bookings' },
@@ -53,10 +62,10 @@ const Sidebar: React.FC = () => {
              <span className="material-symbols-outlined text-[#0059bb]">person</span>
           </div>
           <div className="flex-grow overflow-hidden">
-            <p className="text-sm font-bold text-[#1b1c1c] truncate">Alex Riverstone</p>
-            <p className="text-xs text-[#717786] truncate">Lead Curator</p>
+            <p className="text-sm font-bold text-[#1b1c1c] truncate">{user?.name || 'Guest'}</p>
+            <p className="text-xs text-[#717786] truncate">{user?.role || 'Portal User'}</p>
           </div>
-          <button className="text-[#717786] hover:text-red-500 transition-colors">
+          <button onClick={handleLogout} className="text-[#717786] hover:text-red-500 transition-colors">
             <span className="material-symbols-outlined text-[20px]">logout</span>
           </button>
         </div>
