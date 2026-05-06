@@ -2,10 +2,19 @@ import React, { useState } from 'react';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
 
+interface Destination {
+  id: number;
+  name: string;
+  location: string;
+  description: string;
+  image_uuid: string;
+  imageUrl?: string;
+}
+
 interface AddDestinationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (newDestination: Destination) => void;
 }
 
 const AddDestinationModal: React.FC<AddDestinationModalProps> = ({ isOpen, onClose, onSuccess }) => {
@@ -31,9 +40,9 @@ const AddDestinationModal: React.FC<AddDestinationModalProps> = ({ isOpen, onClo
       });
       const image_uuid = imageRes.data.uuid;
 
-      await api.post('/api/destinations', { ...formData, image_uuid });
+      const destRes = await api.post('/api/destinations', { ...formData, image_uuid });
       toast.success('Destination added successfully!');
-      onSuccess();
+      onSuccess(destRes.data);
       onClose();
     } catch (error: unknown) {
       toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to add destination');

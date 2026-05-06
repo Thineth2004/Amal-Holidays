@@ -1,40 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddDestinationModal from '../components/AddDestinationModal';
+import api from '../api/axiosInstance';
+import toast from 'react-hot-toast';
+import { backend_url } from '../config/config';
 
 interface Destination {
   id: number;
   name: string;
   location: string;
   description: string;
+  image_uuid: string;
   imageUrl?: string;
 }
 
 const Destinations: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
 
-  // Cleaned up data structure for admin view
-  const destinations: Destination[] = [
-    {
-      id: 1,
-      name: 'Santorini',
-      location: 'Greece',
-      description: 'Experience white-washed architecture overlooking the Aegean caldera.',
-      imageUrl: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&q=80&w=600'
-    },
-    {
-      id: 2,
-      name: 'Kyoto',
-      location: 'Japan',
-      description: 'Immerse yourself in traditional temples and tranquil gardens.',
-      imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=600'
+  const fetchDestinations = async () => {
+    try {
+      const response = await api.get('/api/destinations');
+      const data = response.data.map((dest: Destination) => ({
+        ...dest,
+        imageUrl: `${backend_url}/api/images/${dest.image_uuid}`
+      }));
+      setDestinations(data);
+    } catch (error: unknown) {
+      toast.error( (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to fetch destinations');
     }
-  ];
+  };
+
+  useEffect(() => {
+    const loadDestinations = async () => {
+      await fetchDestinations();
+    };
+    loadDestinations();
+  }, []);
+
+  const handleAddSuccess = (newDestination: Destination) => {
+    setDestinations([...destinations, {
+      ...newDestination,
+      imageUrl: `${backend_url}/api/images/${newDestination.image_uuid}`
+    }]);
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
-      <AddDestinationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={() => setIsModalOpen(false)} />
-
+      <AddDestinationModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSuccess={(newDest: Destination) => handleAddSuccess(newDest)} 
+      />
       <div className="px-8 pb-12 pt-4">
         {/* Integrated Control Bar - Improved Visibility */}
         <div className="bg-white/60 backdrop-blur-md border border-slate-200 rounded-2xl p-4 mb-8 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-sm">
