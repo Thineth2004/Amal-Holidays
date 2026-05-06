@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
 import StaffLogin from './pages/StaffLogin'
-import Destinations from './components/Destinations'
+import Destinations from './pages/Destinations'
 import Layout from './components/Layout'
 
 
