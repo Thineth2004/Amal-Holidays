@@ -44,9 +44,9 @@ const AddDestinationModal: React.FC<AddDestinationModalProps> = ({ isOpen, onClo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1b1c1c]/40 backdrop-blur-sm">
-      <div className="bg-white/90 backdrop-blur-xl border border-white/50 w-full max-w-lg rounded-[2.5rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-300">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-semibold text-[#1b1c1c] tracking-tight">New Destination</h2>
+      <div className="bg-white/90 backdrop-blur-xl border border-white/50 w-full max-w-lg rounded-lg shadow-2xl p-6 animate-in fade-in zoom-in duration-300">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-[#1b1c1c] tracking-tight">New Destination</h2>
           <button onClick={onClose} className="hover:bg-black/5 transition-colors rounded-full">
             <span className="material-symbols-outlined text-[#717786] p-2">close</span>
           </button>
