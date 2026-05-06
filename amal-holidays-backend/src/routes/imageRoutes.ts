@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
 import { uploadImage, getImage } from '../controllers/imageController';
 import { authenticate } from '../middlewares/authMiddleware';
 import { authorize } from '../middlewares/roleMiddleware';
@@ -11,12 +12,13 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, uuidv4());
+    const ext = path.extname(file.originalname);
+    cb(null, `${uuidv4()}${ext}`);
   }
 });
 const upload = multer({ storage });
 
-router.post('/upload', authenticate, authorize('manager'), upload.single('image'), uploadImage);
+router.post('/upload', authenticate, authorize('Manager'), upload.single('image'), uploadImage);
 router.get('/:uuid', getImage);
 
 export default router;
