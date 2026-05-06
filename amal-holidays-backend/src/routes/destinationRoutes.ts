@@ -5,7 +5,7 @@ import { authorize } from "../middlewares/roleMiddleware";
 
 const router = express.Router();
 
-router.get("/", authenticate, getDestinations);
+router.get("/", getDestinations);
 router.post("/", authenticate, authorize("Manager"), createDestination);
 
 export default router;

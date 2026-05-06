@@ -23,7 +23,6 @@ router.post(
 // Manager only
 router.get(
     "/all",
-    authenticate,
     authorize("Manager"),
     getAllPackagesController
 );
@@ -38,7 +37,6 @@ router.get(
 // Get by ID
 router.get(
     "/:id",
-    authenticate,
     getPackageController
 );
 
