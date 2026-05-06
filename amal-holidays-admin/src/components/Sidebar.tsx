@@ -27,15 +27,15 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="w-72 h-screen fixed left-0 top-0 z-40 flex flex-col border-r border-white/20 bg-white/40 backdrop-blur-3xl px-6 py-10 font-['Plus_Jakarta_Sans']">
+    <aside className="w-72 h-screen shadow-md fixed left-0 top-0 z-40 flex flex-col border-r border-slate-200 px-6 py-6 font-['Plus_Jakarta_Sans']">
       {/* Brand Logo */}
-      <div className="mb-12 px-4">
+      <div className="mb-6 px-4">
         <h1 className="text-2xl font-extrabold font-nav-md tracking-tighter text-[#0059bb]">Amal Holidays</h1>
-        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#717786] mt-1">Admin Portal</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#717786] mt-1">Staff Portal</p>
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-grow space-y-1 overflow-y-auto pr-2 custom-scrollbar">
+      <nav className="flex-grow space-y-1 pr-2">
         {navItems.map((item) => (
           <NavLink
             key={item.label}
@@ -56,7 +56,7 @@ const Sidebar: React.FC = () => {
       </nav>
 
       {/* Profile / Logout Section */}
-      <div className="pt-6 border-t border-white/30">
+      <div className="border-t border-white/30">
         <div className="flex items-center gap-3 px-4 py-2">
           <div className="w-10 h-10 rounded-full bg-[#d8e2ff] border-2 border-white flex items-center justify-center overflow-hidden">
              <span className="material-symbols-outlined text-[#0059bb]">person</span>
