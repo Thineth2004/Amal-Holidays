@@ -10,7 +10,7 @@ const App = () => {
       <div className="bg-background text-on-background font-body-md text-body-md antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
         <Routes>
           <Route path="/login" element={<StaffLogin />} />
-          
+
           {/* Admin Layout Routes */}
           <Route element={<Layout />}>
             <Route path="/" element={<div className="p-8">Dashboard Content Coming Soon</div>} />
