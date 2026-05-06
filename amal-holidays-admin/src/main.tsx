@@ -2,11 +2,11 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { Toaster } from 'react-hot-toast'
-import { Fragment } from 'react/jsx-runtime'
+import { AuthProvider } from './contexts/AuthProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <Fragment>
+  <AuthProvider>
     <App />
     <Toaster position='bottom-center' />
-  </Fragment>
+  </AuthProvider>
 )
