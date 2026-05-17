@@ -1,5 +1,7 @@
+import { useAuth } from '../hooks/useAuth';
+
 const NavBar = () => {
-  const isLoggedIn = false // Placeholder for authentication state
+  const { isAuthenticated, logout } = useAuth();
 
   const links = [
     {
@@ -35,15 +37,24 @@ const NavBar = () => {
           ))}
         </div>
 
-        <div className="flex items-center gap-6">
-          {!isLoggedIn && (
-            <a className="text-gray-600 font-medium text-sm hover:opacity-80 transition-all" href="/signin">
-              Sign In
-            </a>
+        <div className="flex items-center gap-2">
+          {!isAuthenticated ? (
+            <>
+              <a className="text-gray-700 bg-gray-200 border border-slate-400 px-6 py-2.5 rounded-full font-medium text-sm hover:opacity-80 active:scale-95 transition-all" href="/signin">
+                Log In
+              </a>
+              <a href="/signup" className="bg-[#0059bb] text-white px-6 py-2.5 rounded-full font-medium text-sm shadow-sm active:scale-95 transition-all">
+                Sign Up
+              </a>
+            </>
+          ) : (
+            <button 
+                onClick={logout}
+                className="text-white bg-red-400 px-6 py-2.5 rounded-full font-medium text-sm hover:bg-red-500 active:scale-95 transition-all"
+            >
+                Logout
+            </button>
           )}
-          <a href={isLoggedIn ? '/dashboard' : '/signup' } className="bg-[#0059bb] text-white px-6 py-2.5 rounded-full font-medium text-sm shadow-sm active:scale-95 transition-all">
-            {isLoggedIn ? 'Bookings' : 'Sign Up'}
-          </a>
         </div>
       </div>
     </nav>

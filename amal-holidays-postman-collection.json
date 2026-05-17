@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6",
 		"name": "Amal Holidays Backend API",
-		"description": "Comprehensive API collection for Amal Holidays Backend system, including Auth, Packages, Bookings, Payments, Destinations, and Assignments.",
+		"description": "Comprehensive API collection for Amal Holidays Backend system, including Auth, Packages, Bookings, Payments, Destinations, Assignments, and Public Assets.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -80,6 +80,49 @@
 						"description": "Logs in a user and returns a JWT token. The token is automatically saved to the 'token' environment variable."
 					},
 					"response": []
+				},
+				{
+					"name": "Staff/Manager Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.environment.set(\"token\", jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"manager@example.com\",\n    \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/staff-login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"staff-login"
+							]
+						},
+						"description": "Logs in a Staff or Manager user and returns a JWT token. The token is automatically saved to the 'token' environment variable."
+					},
+					"response": []
 				}
 			]
 		},
@@ -99,7 +142,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Beautiful Ella Adventure\",\n    \"description\": \"5 days 4 nights tour in Ella\",\n    \"price\": 45000,\n    \"capacity\": 20,\n    \"available_slots\": 20,\n    \"destination_id\": 1,\n    \"start_date\": \"2026-06-01\",\n    \"end_date\": \"2026-06-05\"\n}",
+							"raw": "{\n    \"title\": \"Beautiful Ella Adventure\",\n    \"description\": \"5 days 4 nights tour in Ella\",\n    \"price\": 45000,\n    \"capacity\": 20,\n    \"available_slots\": 20,\n    \"destination_id\": 1,\n    \"start_date\": \"2026-06-01\",\n    \"end_date\": \"2026-06-05\",\n    \"image_uuids\": [\"uuid1\", \"uuid2\"]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -319,7 +362,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Ella\",\n    \"location\": \"Badulla District\",\n    \"description\": \"Scenic mountain village\"\n}",
+							"raw": "{\n    \"name\": \"Ella\",\n    \"location\": \"Badulla District\",\n    \"description\": \"Scenic mountain village\",\n    \"image_uuid\": \"some-uuid\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -407,6 +450,70 @@
 							]
 						},
 						"description": "Assigns a Guide or Driver to a booking. Checks for availability on the travel date."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "Upload Image (Manager)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/images/upload",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"images",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Image",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/images/:uuid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"images",
+								":uuid"
+							],
+							"variable": [
+								{
+									"key": "uuid",
+									"value": "uuid-here"
+								}
+							]
+						}
 					},
 					"response": []
 				}

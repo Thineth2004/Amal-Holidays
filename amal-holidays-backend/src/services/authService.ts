@@ -46,3 +46,31 @@ export const loginUser =  async (email: string, password: string) => {
 
     return { safeUser, token };
 };
+
+export const staffManagerLoginUser = async (email: string, password: string) => {
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+        throw new Error("Invalid email or password");
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+        throw new Error("Invalid email or password");
+    }
+
+    if (user.role !== "Staff" && user.role !== "Manager") {
+        throw new Error("Invalid email or password");
+    }
+
+    const token = jwt.sign(
+        { user_id: user.user_id, role: user.role },
+        process.env.JWT_SECRET as string,
+        { expiresIn: "1d" }
+    );
+
+    const { password: _, ...safeUser } = user;
+
+    return { safeUser, token };
+};
