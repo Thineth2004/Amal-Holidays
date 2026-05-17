@@ -6,7 +6,7 @@ import Destinations from './pages/Destinations'
 import Packages from './pages/Packages'
 import PackageDetails from './pages/PackageDetails'
 import SignUp from './pages/SignUp'
-import LogIn from './pages/LogIn'
+import LogIn from './pages/Login'
 import PasswordReset from './pages/ResetPassword'
 
 const App = () => {
