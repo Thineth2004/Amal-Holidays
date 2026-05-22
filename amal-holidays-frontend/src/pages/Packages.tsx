@@ -23,6 +23,7 @@ const Packages: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [maxPrice, setMaxPrice] = useState(5000); // Bumped default slider to match max capability
+  const [visibleCount, setVisibleCount] = useState(6); // Tracks pagination limits
 
   // 1. Fetch Dynamic Data on Mount
   useEffect(() => {
@@ -36,6 +37,11 @@ const Packages: React.FC = () => {
         setLoading(false);
       });
   }, []);
+
+  // Reset visible items back to default limit whenever filters change
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [searchQuery, activeCategory, maxPrice]);
 
   // 2. Functional Filter Engine
   const filteredPackages = useMemo(() => {
@@ -130,76 +136,84 @@ const Packages: React.FC = () => {
       {/* Packages Grid Rendering Section */}
       <div className="lg:w-3/4 flex flex-col gap-10">
         {filteredPackages.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredPackages.map((pkg) => (
-              <article
-                key={pkg.package_id || pkg.id}
-                className="group flex flex-col bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-[#c1c6d7]/20 relative"
-              >
-                {/* Save/Favorite Overlay Button */}
-                <button className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/70 backdrop-blur-md rounded-full flex items-center justify-center text-[#1b1c1c] hover:text-[#b52330] hover:bg-white transition-colors shadow-sm">
-                  <span className="material-symbols-outlined text-[20px]">favorite</span>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Slicing array up to visibleCount limit to enable progressive loading */}
+              {filteredPackages.slice(0, visibleCount).map((pkg) => (
+                <article
+                  key={pkg.package_id || pkg.id}
+                  className="group flex flex-col bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-[#c1c6d7]/20 relative"
+                >
+                  {/* Save/Favorite Overlay Button */}
+                  <button className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/70 backdrop-blur-md rounded-full flex items-center justify-center text-[#1b1c1c] hover:text-[#b52330] hover:bg-white transition-colors shadow-sm">
+                    <span className="material-symbols-outlined text-[20px]">favorite</span>
+                  </button>
+
+                  {/* Main Card Image Viewport */}
+                  <div className="w-full aspect-[4/3] overflow-hidden relative bg-[#eae7e7]">
+                    <img
+                      src={pkg.image_url || "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?q=80&w=1000"}
+                      alt={pkg.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                    {pkg.available_slots === 0 && (
+                      <div className="absolute bottom-4 left-4 flex gap-2">
+                        <span className="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-semibold shadow-sm">Fully Booked</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content Area Container */}
+                  <div className="p-6 flex flex-col flex-grow gap-4">
+                    <div className="flex items-center gap-3 text-[#414754] text-xs font-semibold">
+                      <div className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[16px]">schedule</span> {pkg.duration} Days
+                      </div>
+                      <span>•</span>
+                      <div className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[16px]">location_on</span> {pkg.destination_name || "Sri Lanka"}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-2xl font-bold text-[#1b1c1c] group-hover:text-[#0059bb] transition-colors line-clamp-1">{pkg.title}</h3>
+                      <p className="text-sm text-[#414754] line-clamp-2">{pkg.description}</p>
+                    </div>
+
+                    {/* Pricing and Action Layer */}
+                    <div className="mt-auto pt-4 flex items-center justify-between border-t border-[#c1c6d7]/20">
+                      <div className="flex flex-col">
+                        <span className="text-xs font-semibold text-[#414754]">From</span>
+                        <span className="text-3xl font-bold text-[#1b1c1c] leading-none">Rs. {(pkg.price || 0).toLocaleString()}</span>
+                      </div>
+                      <button className="bg-[#0059bb]/10 text-[#0059bb] hover:bg-[#0059bb] hover:text-white px-5 py-2.5 rounded-full font-bold text-sm transition-colors">
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {/* Load More Action Button Container - Only shows if more hidden elements remain */}
+            {filteredPackages.length > visibleCount && (
+              <div className="w-full flex justify-center mt-8">
+                <button 
+                  onClick={() => setVisibleCount(prev => prev + 6)}
+                  className="bg-white border border-[#717786]/30 text-[#1b1c1c] px-8 py-3 rounded-full font-bold hover:bg-[#e5e2e1] hover:border-[#717786] transition-all shadow-sm flex items-center gap-2"
+                >
+                  Load More Packages
+                  <span className="material-symbols-outlined text-[20px]">expand_more</span>
                 </button>
-
-                {/* Main Card Image Viewport */}
-                <div className="w-full aspect-[4/3] overflow-hidden relative bg-[#eae7e7]">
-                  <img
-                    src={pkg.image_url || "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?q=80&w=1000"}
-                    alt={pkg.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  {pkg.available_slots === 0 && (
-                    <div className="absolute bottom-4 left-4 flex gap-2">
-                      <span className="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-semibold shadow-sm">Fully Booked</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Content Area Container */}
-                <div className="p-6 flex flex-col flex-grow gap-4">
-                  <div className="flex items-center gap-3 text-[#414754] text-xs font-semibold">
-                    <div className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[16px]">schedule</span> {pkg.duration} Days
-                    </div>
-                    <span>•</span>
-                    <div className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[16px]">location_on</span> {pkg.destination_name || "Sri Lanka"}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <h3 className="text-2xl font-bold text-[#1b1c1c] group-hover:text-[#0059bb] transition-colors line-clamp-1">{pkg.title}</h3>
-                    <p className="text-sm text-[#414754] line-clamp-2">{pkg.description}</p>
-                  </div>
-
-                  {/* Pricing and Action Layer */}
-                  <div className="mt-auto pt-4 flex items-center justify-between border-t border-[#c1c6d7]/20">
-                    <div className="flex flex-col">
-                      <span className="text-xs font-semibold text-[#414754]">From</span>
-                      <span className="text-3xl font-bold text-[#1b1c1c] leading-none">Rs. {(pkg.price || 0).toLocaleString()}</span>
-                    </div>
-                    <button className="bg-[#0059bb]/10 text-[#0059bb] hover:bg-[#0059bb] hover:text-white px-5 py-2.5 rounded-full font-bold text-sm transition-colors">
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+              </div>
+            )}
+          </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-[#414754]">
             <span className="material-symbols-outlined text-6xl mb-4">search_off</span>
             <p className="text-lg font-semibold">No packages found matching your criteria.</p>
           </div>
         )}
-
-        {/* Load More Action Button */}
-        <div className="w-full flex justify-center mt-8">
-          <button className="bg-white border border-[#717786]/30 text-[#1b1c1c] px-8 py-3 rounded-full font-bold hover:bg-[#e5e2e1] hover:border-[#717786] transition-all shadow-sm flex items-center gap-2">
-            Load More Packages
-            <span className="material-symbols-outlined text-[20px]">expand_more</span>
-          </button>
-        </div>
       </div>
     </main>
   );
