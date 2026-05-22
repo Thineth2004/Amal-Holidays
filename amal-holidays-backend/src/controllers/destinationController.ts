@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import * as repo from "../repositories/destinationRepository";
+import * as service from "../services/destinationService";
 
 export const getDestinations = async (req: Request, res: Response) => {
   try {
-    const data = await repo.getAllDestinationsRepo();
-    res.json(data);
+    const data = await service.fetchAllDestinations();
+    res.status(200).json(data);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -12,8 +12,8 @@ export const getDestinations = async (req: Request, res: Response) => {
 
 export const createDestination = async (req: Request, res: Response) => {
   try {
-    const { name, location, description, image_uuid } = req.body;
-    const data = await repo.createDestinationRepo(name, location, description, image_uuid);
+    const { name, location, description, image_url } = req.body;
+    const data = await service.addNewDestination(name, location, description, image_url);
     res.status(201).json(data);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
