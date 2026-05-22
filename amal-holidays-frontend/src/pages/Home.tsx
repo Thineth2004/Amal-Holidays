@@ -1,32 +1,39 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { fetchDestinations, type DestinationData } from '../api/axiosInstance';
 
 const Home = () => {
+  const [destinations, setDestinations] = useState<DestinationData[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<DestinationData[]>([]);
   const suggestionRef = useRef<HTMLDivElement>(null);
+  
+  const navigate = useNavigate();
 
-  const allDestinations = useMemo(() => [
-    'Bora Bora, French Polynesia',
-    'Maldives, South Asia',
-    'Dubai, UAE',
-    'Machu Picchu, Peru',
-    'Kyoto, Japan',
-    'Venice, Italy',
-    'London, UK',
-    'Agra, India',
-    'Santorini, Greece',
-    'Bali, Indonesia',
-    'Swiss Alps, Switzerland'
-  ], []);
+  // Load live DB destinations on mount
+  useEffect(() => {
+    const loadDestinations = async () => {
+      try {
+        const data = await fetchDestinations();
+        setDestinations(data);
+      } catch (err) {
+        console.error("Failed to load destinations for home screen landing layout:", err);
+      }
+    };
+    loadDestinations();
+  }, []);
 
+  // Sync suggestion filtering against live backend records
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
+    
     if (value.length > 0) {
-      const filtered = allDestinations.filter(d =>
-        d.toLowerCase().includes(value.toLowerCase())
+      const filtered = destinations.filter(d =>
+        d.name.toLowerCase().includes(value.toLowerCase()) ||
+        d.location.toLowerCase().includes(value.toLowerCase())
       );
       setSuggestions(filtered);
       setShowSuggestions(filtered.length > 0);
@@ -36,6 +43,7 @@ const Home = () => {
     }
   };
 
+  // Close suggestions card if clicked outside form context bounds
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
@@ -46,84 +54,107 @@ const Home = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Form handle submit router transition engine
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery) {
-      toast.success(`Searching for adventures in ${searchQuery}...`);
-    } else {
+    if (!searchQuery.trim()) {
       toast.error('Please enter a destination to search.');
+      return;
     }
-    console.log('Searching for:', searchQuery);
+
+    // Attempt to locate matching target destination row
+    const exactMatch = destinations.find(
+      d => d.name.toLowerCase() === searchQuery.trim().toLowerCase()
+    );
+
+    if (exactMatch) {
+      toast.success(`Heading to ${exactMatch.name}...`);
+      navigate(`/destinations/${exactMatch.destination_id}/packages`);
+    } else {
+      // Fallback: Redirect to central browse catalogue layout filtered by search string
+      toast.success(`Searching destinations for "${searchQuery}"...`);
+      navigate('/destinations');
+    }
     setShowSuggestions(false);
   };
 
   return (
     <main>
-      {/* Hero Section */}
-      <section className="relative h-screen flex flex-col justify-center items-center px-gutter bg-surface-container-lowest">
-        {/* Background Image */}
+      {/* Hero Header Context Banner Row */}
+      <section className="relative h-screen flex flex-col justify-center items-center px-6 bg-slate-900">
+        {/* Background Image Banner Canvas */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
-            className="w-full h-full object-cover"
-            data-alt="Stunning sunset over a calm ocean with a picturesque wooden pier extending into the water, warm golden and pink hues in the sky"
-            src="/images/hero-bg.jpg"
+            className="w-full h-full object-cover opacity-75"
+            src="https://images.unsplash.com/photo-1546708973-b339540b5162?q=80&w=1600"
+            alt="Amal Holidays Sri Lanka Premium Experience Cover View"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-surface-container-lowest/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-white/10"></div>
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto flex flex-col gap-md text-white">
-          <h1 className="font-headline-xl text-headline-xl text-white drop-shadow-lg">
+        {/* Content Callouts */}
+        <div className="relative z-10 text-center max-w-4xl mx-auto flex flex-col gap-4 text-white">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white drop-shadow-xl tracking-tight leading-tight">
             Discover Your Next <br /> Extraordinary Holiday
           </h1>
-          <p className="font-body-lg text-body-lg text-white/90 drop-shadow-md max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl font-medium text-white/90 drop-shadow-md max-w-2xl mx-auto mt-2">
             Experience Sri Lanka's most breathtaking destinations with our curated premium travel packages designed for pure serenity.
           </p>
         </div>
 
-        {/* Omni-Search Bar (Glassmorphic) */}
-        <div className="relative z-20 w-full max-w-3xl mx-auto mt-8" ref={suggestionRef}>
+        {/* Omni-Search Bar (Glassmorphic Interface Block) */}
+        <div className="relative z-20 w-full max-w-3xl mx-auto mt-10" ref={suggestionRef}>
           <form
             onSubmit={handleSearch}
-            className="bg-white/70 backdrop-blur-[20px] border border-white rounded-full shadow-[0px_8px_32px_rgba(0,0,0,0.1)] flex items-center"
+            className="bg-white/80 backdrop-blur-[20px] border border-white/40 rounded-full shadow-[0px_12px_40px_rgba(0,0,0,0.15)] flex items-center p-1"
           >
-            <div className="flex-1 flex items-center justify-between pl-6 pr-4 py-2 rounded-full transition-colors w-full group">
-              <div className="flex items-center gap-sm py-2 flex-1">
-                <span className="material-symbols-outlined text-outline">location_on</span>
-                <div className="flex flex-col flex-1">
-                  <input
-                    id="destination"
-                    type="text"
-                    autoComplete="off"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    placeholder="Where to?"
-                    className="bg-transparent border-none outline-none text-xl text-on-surface placeholder:text-on-surface-variant/40 w-full"
-                  />
-                </div>
+            <div className="flex-1 flex items-center justify-between pl-6 pr-2 py-1 rounded-full w-full group">
+              <div className="flex items-center gap-3 py-2 flex-1">
+                <span className="material-symbols-outlined text-[#717786]">location_on</span>
+                <input
+                  id="destination"
+                  type="text"
+                  autoComplete="off"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Where to? (e.g. Sigiriya, Ella, Galle...)"
+                  className="bg-transparent border-none outline-none text-xl text-[#1b1c1c] placeholder:text-[#717786]/60 w-full font-medium"
+                />
               </div>
               <button
                 type="submit"
-                className="bg-primary text-on-primary p-4 rounded-full flex items-center justify-center hover:scale-105 hover:shadow-md active:scale-95 transition-all"
+                className="bg-[#0059bb] text-white p-4 rounded-full flex items-center justify-center hover:scale-105 hover:bg-[#004494] active:scale-95 transition-all shadow-sm"
               >
-                <span className="material-symbols-outlined" data-weight="fill" style={{ fontVariationSettings: "'FILL' 1" }}>
+                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
                   search
                 </span>
               </button>
             </div>
           </form>
 
-          {/* Suggestions Dropdown */}
+          {/* Autocomplete Suggestions Dropdown Panel */}
           {showSuggestions && (
-            <div className="absolute top-full left-0 right-0 mt-3 bg-white/90 backdrop-blur-xl border border-white/50 rounded-[2rem] shadow-2xl overflow-hidden py-4 z-30">
-              {suggestions.map((dest, index) => (
+            <div className="absolute top-full left-0 right-0 mt-3 bg-white/95 backdrop-blur-xl border border-white/60 rounded-3xl shadow-2xl overflow-hidden py-2 z-30 max-h-72 overflow-y-auto">
+              {suggestions.map((dest) => (
                 <button
-                  key={index}
-                  onClick={() => { setSearchQuery(dest); setShowSuggestions(false); }}
-                  className="w-full text-left px-8 py-4 hover:bg-black/5 flex items-center gap-4 transition-colors"
+                  key={dest.destination_id}
+                  onClick={() => { 
+                    setSearchQuery(dest.name); 
+                    setShowSuggestions(false); 
+                    navigate(`/destinations/${dest.destination_id}/packages`);
+                  }}
+                  className="w-full text-left px-6 py-3.5 hover:bg-black/5 flex items-center justify-between transition-colors group"
                 >
-                  <span className="material-symbols-outlined text-outline">history</span>
-                  <span className="font-medium text-on-surface">{dest}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-[#717786] group-hover:text-[#0059bb]">travel_explore</span>
+                    <div>
+                      <span className="font-bold text-[#1b1c1c] block">{dest.name}</span>
+                      <span className="text-xs text-[#717786]">{dest.location}</span>
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-[#0059bb] bg-[#0059bb]/10 px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                    View Packages
+                  </span>
                 </button>
               ))}
             </div>
@@ -131,217 +162,169 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Destinations */}
-      <section className="max-w-container-max mx-auto px-gutter py-lg flex flex-col gap-lg">
-        <div className="flex flex-col gap-xs">
-          <h2 className="font-headline-lg text-headline-lg text-on-surface">Featured Destinations</h2>
-          <p className="font-body-md text-body-md text-on-surface-variant">Explore our hand-picked locations for your perfect getaway.</p>
+      {/* Featured Destinations Dynamic Grid Map Layout */}
+      <section className="max-w-[1280px] mx-auto px-6 py-20 flex flex-col gap-8">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-4xl font-extrabold tracking-tight text-[#1b1c1c]">Featured Destinations</h2>
+          <p className="text-[#414754] text-base">Explore our hand-picked native locations for your perfect paradise getaway.</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-[500px]">
 
-          {/* Large Main Slot */}
-          <div className="col-span-2 row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-            <div className="overflow-hidden w-full h-full">
-              <img
-                className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
-                src="/images/placeholders/1.jpeg"
-                alt="Destination 1"
-              />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-            <div className="absolute bottom-3 left-5 p-4 text-white">
-              <h3 className="font-label-bold text-2xl drop-shadow-md">Randenigala</h3>
-            </div>
+        {destinations.length === 0 ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0059bb]"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 min-h-[500px]">
+            {/* Slot 1: Large Main Hero Slot Card (First Row Item index 0) */}
+            {destinations[0] && (
+              <div 
+                onClick={() => navigate(`/destinations/${destinations[0].destination_id}/packages`)}
+                className="sm:col-span-2 sm:row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)] min-h-[300px]"
+              >
+                <img
+                  className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+                  src={destinations[0].image_url || "/images/placeholders/1.jpeg"}
+                  alt={destinations[0].name}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-4 left-4 p-4 text-white">
+                  <span className="text-xs font-bold tracking-widest uppercase text-white/70 block mb-1">{destinations[0].location}</span>
+                  <h3 className="font-extrabold text-3xl drop-shadow-md">{destinations[0].name}</h3>
+                </div>
+              </div>
+            )}
+
+            {/* Slot 2: Narrow Vertical Track Slot (Index 1) */}
+            {destinations[1] && (
+              <div 
+                onClick={() => navigate(`/destinations/${destinations[1].destination_id}/packages`)}
+                className="sm:row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)] min-h-[240px]"
+              >
+                <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src={destinations[1].image_url || "/images/placeholders/2.jpeg"} alt={destinations[1].name} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                <div className="absolute bottom-4 left-4 p-2 text-white">
+                  <h3 className="font-bold text-xl drop-shadow-md">{destinations[1].name}</h3>
+                </div>
+              </div>
+            )}
+
+            {/* Slot 3: Small Horizontal Blocks (Index 2) */}
+            {destinations[2] && (
+              <div 
+                onClick={() => navigate(`/destinations/${destinations[2].destination_id}/packages`)}
+                className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)] min-h-[150px]"
+              >
+                <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src={destinations[2].image_url || "/images/placeholders/3.jpeg"} alt={destinations[2].name} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                <div className="absolute bottom-4 left-4 p-2 text-white">
+                  <h3 className="font-bold text-lg drop-shadow-md">{destinations[2].name}</h3>
+                </div>
+              </div>
+            )}
+            
+            {/* Slot 4: Small Horizontal Blocks (Index 3) */}
+            {destinations[3] && (
+              <div 
+                onClick={() => navigate(`/destinations/${destinations[3].destination_id}/packages`)}
+                className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)] min-h-[150px]"
+              >
+                <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src={destinations[3].image_url || "/images/placeholders/4.jpeg"} alt={destinations[3].name} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                <div className="absolute bottom-4 left-4 p-2 text-white">
+                  <h3 className="font-bold text-lg drop-shadow-md">{destinations[3].name}</h3>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* Popular Tours Section Block */}
+      <section className="bg-[#eae7e7]/20 w-full py-20 border-t border-b border-[#eae7e7]/60">
+        <div className="max-w-[1280px] mx-auto px-6 flex flex-col gap-8">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-4xl font-extrabold text-[#1b1c1c] tracking-tight">Popular Hotspot Deals</h2>
+            <p className="text-[#414754] text-base">Top-rated live experiences dynamically mapped from active database itineraries.</p>
           </div>
 
-          {/* Narrow vertical slot */}
-          <div className="row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-            <div className="overflow-hidden w-full h-full">
-              <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src="/images/placeholders/2.jpeg" alt="Destination 2" />
+          {destinations.length === 0 ? (
+            <div className="text-center text-[#717786] py-10">Syncing tours catalogs...</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {destinations.slice(0, 4).map((dest) => (
+                <div 
+                  key={dest.destination_id}
+                  onClick={() => navigate(`/destinations/${dest.destination_id}/packages`)}
+                  className="flex flex-col bg-white rounded-xl overflow-hidden group cursor-pointer shadow-[0px_4px_12px_rgba(0,0,0,0.04)] border border-[#eae7e7]/40 hover:shadow-[0px_12px_24px_rgba(0,0,0,0.08)] transition-all"
+                >
+                  <div className="aspect-[4/3] overflow-hidden relative bg-gray-100">
+                    <img
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      src={dest.image_url || "https://images.unsplash.com/photo-1546708973-b339540b5162?q=80&w=600"}
+                      alt={dest.name}
+                    />
+                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center justify-center shadow-sm">
+                      <span className="material-symbols-outlined text-[#0059bb] text-sm font-bold">star</span>
+                      <span className="text-xs font-bold ml-0.5 text-[#1b1c1c]">{dest.rating || 4.9}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-5 flex flex-col flex-grow">
+                    <span className="text-[10px] font-bold tracking-widest text-[#717786] uppercase mb-1">{dest.category || 'Adventure'}</span>
+                    <h3 className="font-extrabold text-[#1b1c1c] text-lg line-clamp-1 group-hover:text-[#0059bb] transition-colors">{dest.name} Journey</h3>
+                    <p className="text-xs text-[#717786] mt-0.5 flex items-center gap-0.5">
+                      <span className="material-symbols-outlined text-[14px]">location_on</span>
+                      {dest.location}
+                    </p>
+                    
+                    <div className="mt-4 pt-3 border-t border-[#eae7e7]/60 flex items-center justify-between">
+                      <span className="text-xs text-[#414754] font-medium">Starting from</span>
+                      <span className="font-extrabold text-[#1b1c1c] text-base">
+                        Rs. {Number(dest.priceFrom || 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-4 text-white">
-              <h3 className="font-label-bold text-lg drop-shadow-md">Kandy</h3>
-            </div>
-          </div>
-
-          {/* Small horizontal slot */}
-          <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-            <div className="overflow-hidden w-full h-full">
-              <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src="/images/placeholders/3.jpeg" alt="Destination 3" />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-4 text-white">
-              <h3 className="font-label-bold text-lg drop-shadow-md">Nuwara Eliya</h3>
-            </div>
-          </div>
-          
-          {/* Small horizontal slot */}
-          <div className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-            <div className="overflow-hidden w-full h-full">
-              <img className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105" src="/images/placeholders/4.jpeg" alt="Destination 4" />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-4 text-white">
-              <h3 className="font-label-bold text-lg drop-shadow-md">Matale</h3>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Popular Tours */}
-      <section className=" w-full">
-        <div className="max-w-container-max mx-auto px-gutter py-lg flex flex-col gap-lg">
-          <div className="flex flex-col gap-xs">
-            <h2 className="font-headline-lg text-headline-lg text-on-surface">Popular Tours</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">Top-rated experiences tailored for unforgettable memories.</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
-
-            {/* Tour Card 1 */}
-            <div className="flex flex-col gap-xs group cursor-pointer">
-              <div className="aspect-[4/3] rounded-lg overflow-hidden relative shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-                <img
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  data-alt="Beautiful view of the Taj Mahal at sunrise, glowing softly against a misty pink and orange sky, serene reflecting pool in foreground"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2ZIlAXAbhQhGNC6rh3WLF6iPYtGoqWTfjz_wUe3FRO9rE4zTolUnjvmhhlI45mTspzzwb8lpmmTQqN3ezXRUz6WobW5rvxdzxIIE7Kp98k3uPN7Tj0pjYSGx-UBYhuhUcoM-lfYYCO9JDjC0QY_Jpwz407aX9O3oReq6ycmYzeV_noVQ1zuP-gN6OoqBO-WYTalYOoijoY1472QEbvZVXskaf_6i-fYacVUD3uCZRn3c__gA5q36YSYos_GfruutxB-BANN-ir54o"
-                />
-                <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full flex items-center justify-center shadow-sm">
-                  <span className="material-symbols-outlined text-on-surface text-sm">favorite</span>
-                </div>
-              </div>
-              <div className="flex flex-col mt-2">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-label-bold text-label-bold text-on-surface truncate pr-4">Golden Triangle Splendor</h3>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span className="material-symbols-outlined text-sm" data-weight="fill" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    <span className="font-body-sm text-body-sm">4.9</span>
-                  </div>
-                </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant truncate">India • 7 Days</p>
-                <div className="mt-1 flex items-center gap-1">
-                  <span className="font-label-bold text-label-bold text-on-surface">$1,299</span>
-                  <span className="font-body-sm text-body-sm text-on-surface-variant">/ person</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Tour Card 2 */}
-            <div className="flex flex-col gap-xs group cursor-pointer">
-              <div className="aspect-[4/3] rounded-lg overflow-hidden relative shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-                <img
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  data-alt="Classic view of the London Eye and Big Ben across the river Thames at twilight, city lights reflecting in the water"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAr8qCczGtlh91-Yq9zBzrwK12s7VF3wq01VOzW5hSzft40japq75v5MaXYfSRKO6uxM7HHOOTy5nRgiFoQc-vBHxmJe43A4Ade98yEgSXlC06kP-_hKOxfaTX3GTsNUUIqoPM5QNeV_WlrhiOXWLUUzhghGwJX84nG9WqCJulzjrbSmOxJKLJTzICz4TaKyQxNMuuuzBUy9ft0-TdrnlIisjG9_U0xXA6Q9jvYj-BTO0b2dd3BBVzFWBEcyLxUcSkEFMkaDeoiPwXs"
-                />
-                <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full flex items-center justify-center shadow-sm">
-                  <span className="material-symbols-outlined text-on-surface text-sm">favorite</span>
-                </div>
-              </div>
-              <div className="flex flex-col mt-2">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-label-bold text-label-bold text-on-surface truncate pr-4">Classic London Walk</h3>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span className="material-symbols-outlined text-sm" data-weight="fill" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    <span className="font-body-sm text-body-sm">4.8</span>
-                  </div>
-                </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant truncate">United Kingdom • 4 Days</p>
-                <div className="mt-1 flex items-center gap-1">
-                  <span className="font-label-bold text-label-bold text-on-surface">$850</span>
-                  <span className="font-body-sm text-body-sm text-on-surface-variant">/ person</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Tour Card 3 */}
-            <div className="flex flex-col gap-xs group cursor-pointer">
-              <div className="aspect-[4/3] rounded-lg overflow-hidden relative shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-                <img
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  data-alt="Beautiful canal in Venice, Italy with gondolas floating on calm water, historic colorful buildings lining the narrow waterway"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7jfv1DIOVKhqPiwghxeCBO4AnR43YXPHsjjtbHQBckINrGWO1X3ZjrQsnXPZwe81OPOtcme_bpjXS1UX2E4VZ0lzpkLQbSw0iuX6rLuIb4esxq4IxZOpDzqT1qJGk1AhbhHrfUdGZbG6e-anPIJ58MWhq-yof3xM-NeyeDa6wKReTQ4ziDfqoTThCZVd2WGtQVG88vIR-zA8Mxlwibfs6u_LTv1T82B9lvM9UwyQ8G_aGShfzjYg2MPqRHVxabjXtNZ2o1NwNbCE3"
-                />
-                <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full flex items-center justify-center shadow-sm">
-                  <span className="material-symbols-outlined text-on-surface text-sm">favorite</span>
-                </div>
-              </div>
-              <div className="flex flex-col mt-2">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-label-bold text-label-bold text-on-surface truncate pr-4">Venetian Romance</h3>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span className="material-symbols-outlined text-sm" data-weight="fill" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    <span className="font-body-sm text-body-sm">5.0</span>
-                  </div>
-                </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant truncate">Italy • 5 Days</p>
-                <div className="mt-1 flex items-center gap-1">
-                  <span className="font-label-bold text-label-bold text-on-surface">$1,420</span>
-                  <span className="font-body-sm text-body-sm text-on-surface-variant">/ person</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Tour Card 4 */}
-            <div className="flex flex-col gap-xs group cursor-pointer">
-              <div className="aspect-[4/3] rounded-lg overflow-hidden relative shadow-[0px_6px_16px_rgba(0,0,0,0.06)]">
-                <img
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  data-alt="Breathtaking view of a bamboo forest path in Kyoto, Japan, tall green bamboo stalks creating a serene tunnel effect"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgIkoykHomVtZ6G3S0FyGoiN6YIOQN4IWwh0FRoAg3wLAw_Mo_5BdHUrcNb1_pZSB2GTGJtP2iQOKz6cUOduHZ52oNhbCFUztgGEuaWOeprn7ERx00oeMCtlgqQd4fETwvSMj_mT-SsFcvggPXpJ8LT0E8YAuvr3Yo5hY-iT5L9tsVv5n-Ac-ruHzUtctOV3H2qti2TBIAox2N8S49rgIe8a4Kxqsj-6EMPFZhTtBvT6nATvZfU8MPUjCP6CN0vysMyiG4UYWbNRI3"
-                />
-                <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full flex items-center justify-center shadow-sm">
-                  <span className="material-symbols-outlined text-on-surface text-sm">favorite</span>
-                </div>
-              </div>
-              <div className="flex flex-col mt-2">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-label-bold text-label-bold text-on-surface truncate pr-4">Kyoto Zen Gardens</h3>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span className="material-symbols-outlined text-sm" data-weight="fill" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    <span className="font-body-sm text-body-sm">4.9</span>
-                  </div>
-                </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant truncate">Japan • 10 Days</p>
-                <div className="mt-1 flex items-center gap-1">
-                  <span className="font-label-bold text-label-bold text-on-surface">Rs.4,000</span>
-                  <span className="font-body-sm text-body-sm text-on-surface-variant">/ person</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="max-w-container-max mx-auto px-gutter py-lg">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-lg text-center">
-          <div className="flex flex-col items-center gap-sm">
-            <div className="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary mb-2 shadow-sm">
+      {/* Why Choose Us Benefits Section */}
+      <section className="max-w-[1280px] mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-16 h-16 rounded-full bg-[#0059bb]/10 flex items-center justify-center text-[#0059bb] mb-2 shadow-sm">
               <span className="material-symbols-outlined text-[32px]">support_agent</span>
             </div>
-            <h3 className="font-headline-md text-headline-md text-on-surface">24/7 Expert Support</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant max-w-xs">Our travel concierges are available around the clock to ensure your journey is seamless.</p>
+            <h3 className="text-xl font-bold text-[#1b1c1c]">24/7 Island Support</h3>
+            <p className="text-sm text-[#414754] max-w-xs leading-relaxed">
+              Our Sri Lankan travel concierges are available around the clock to ensure your journey is flawless.
+            </p>
           </div>
-          <div className="flex flex-col items-center gap-sm">
-            <div className="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary mb-2 shadow-sm">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-16 h-16 rounded-full bg-[#0059bb]/10 flex items-center justify-center text-[#0059bb] mb-2 shadow-sm">
               <span className="material-symbols-outlined text-[32px]">verified</span>
             </div>
-            <h3 className="font-headline-md text-headline-md text-on-surface">Curated Quality</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant max-w-xs">Every destination and accommodation is personally vetted to meet our premium standards.</p>
+            <h3 className="text-xl font-bold text-[#1b1c1c]">Curated Quality</h3>
+            <p className="text-sm text-[#414754] max-w-xs leading-relaxed">
+              Every heritage site and boutique villa option is personally vetted to meet our premium standards.
+            </p>
           </div>
-          <div className="flex flex-col items-center gap-sm">
-            <div className="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary mb-2 shadow-sm">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-16 h-16 rounded-full bg-[#0059bb]/10 flex items-center justify-center text-[#0059bb] mb-2 shadow-sm">
               <span className="material-symbols-outlined text-[32px]">eco</span>
             </div>
-            <h3 className="font-headline-md text-headline-md text-on-surface">Sustainable Travel</h3>
-            <p className="font-body-md text-body-md text-on-surface-variant max-w-xs">We partner with eco-conscious providers to minimize our footprint and preserve beauty.</p>
+            <h3 className="text-xl font-bold text-[#1b1c1c]">Sustainable Eco Travel</h3>
+            <p className="text-sm text-[#414754] max-w-xs leading-relaxed">
+              We partner with local eco-conscious providers to minimize our carbon footprint and preserve Sri Lanka's raw beauty.
+            </p>
           </div>
         </div>
       </section>
     </main>
   );
-}
+};
 
-export default Home
+export default Home;

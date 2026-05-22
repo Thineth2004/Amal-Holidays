@@ -15,6 +15,19 @@ export interface DestinationData {
   rating: number;
 }
 
+export interface PackageData {
+  package_id: number;
+  title: string;
+  description: string;
+  price: string | number;
+  available_slots: number;
+  destination_id: number;
+  start_date: string;
+  end_date: string;
+  capacity: number;
+  image_url: string;
+}
+
 // Create Axios Instance
 const api = axios.create({
   baseURL: backend_url,
@@ -55,6 +68,12 @@ export const fetchDestinations = async (): Promise<DestinationData[]> => {
 
 export const createDestination = async (data: Partial<DestinationData>): Promise<DestinationData> => {
   const response = await api.post("/destinations", data);
+  return response.data;
+};
+
+// Fetch full information for a single specific tour package row
+export const fetchPackageById = async (packageId: string | number): Promise<PackageData> => {
+  const response = await api.get(`/packages/${packageId}`);
   return response.data;
 };
 

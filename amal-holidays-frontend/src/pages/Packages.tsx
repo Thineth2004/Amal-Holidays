@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import api from '../api/axiosInstance';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 // Clean typing interface matching your database structure
 interface TourPackage {
@@ -11,24 +11,25 @@ interface TourPackage {
   duration: number;
   destination_name: string;
   price: number;
-  category?: string; // Utilizing standard category matching instead of title parsing
+  category?: string;
   available_slots: number;
-  image_url?: string; // Pro move: Dynamic URL directly from DB
+  image_url?: string;
 }
 
 const CATEGORIES = ['All', 'Adventure', 'Relaxation', 'Cultural', 'Family', 'Heritage'];
 
 const Packages: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Grabs the destination_id out of the URL string
+  const navigate = useNavigate(); // Navigation engine router instance
+  
   const [packages, setPackages] = useState<TourPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
-  const [maxPrice, setMaxPrice] = useState(5000); // Bumped default slider to match max capability
+  const [maxPrice, setMaxPrice] = useState(100000); // Bumped default slider max to accommodate premium itineraries
   const [visibleCount, setVisibleCount] = useState(6); // Tracks pagination limits
 
   useEffect(() => {
-    // Send this ID to your backend endpoint to load packages for just this place!
     console.log("Fetching tour packages for destination ID:", id);
   }, [id]);
 
@@ -61,7 +62,6 @@ const Packages: React.FC = () => {
       const matchesSearch = title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         destination.toLowerCase().includes(searchQuery.toLowerCase());
       
-      // Pro filter matching: checks the true categorical column or matches against layout descriptors
       const matchesCategory = activeCategory === 'All' || 
         category.toLowerCase() === activeCategory.toLowerCase() ||
         title.toLowerCase().includes(activeCategory.toLowerCase()) ||
@@ -129,9 +129,9 @@ const Packages: React.FC = () => {
             </div>
             <input 
               type="range" 
-              min="500" 
-              max="5000" 
-              step="100"
+              min="1000" 
+              max="100000" 
+              step="1000"
               value={maxPrice} 
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full h-2 bg-[#eae7e7] rounded-full appearance-none cursor-pointer accent-[#0059bb]"
@@ -145,7 +145,6 @@ const Packages: React.FC = () => {
         {filteredPackages.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Slicing array up to visibleCount limit to enable progressive loading */}
               {filteredPackages.slice(0, visibleCount).map((pkg) => (
                 <article
                   key={pkg.package_id || pkg.id}
@@ -193,8 +192,14 @@ const Packages: React.FC = () => {
                         <span className="text-xs font-semibold text-[#414754]">From</span>
                         <span className="text-3xl font-bold text-[#1b1c1c] leading-none">Rs. {(pkg.price || 0).toLocaleString()}</span>
                       </div>
-                      <button className="bg-[#0059bb]/10 text-[#0059bb] hover:bg-[#0059bb] hover:text-white px-5 py-2.5 rounded-full font-bold text-sm transition-colors">
+                      
+                      {/* FIXED ACTIVE ROUTING ACTION BUTTON */}
+                      <button 
+                        onClick={() => navigate(`/packages/${pkg.package_id || pkg.id}`)}
+                        className="bg-[#0059bb]/10 text-[#0059bb] hover:bg-[#0059bb] hover:text-white px-5 py-2.5 rounded-full font-bold text-sm transition-colors flex items-center gap-1 group/btn"
+                      >
                         View Details
+                        <span className="material-symbols-outlined text-[16px] group-hover/btn:translate-x-0.5 transition-transform">visibility</span>
                       </button>
                     </div>
                   </div>
@@ -202,7 +207,7 @@ const Packages: React.FC = () => {
               ))}
             </div>
 
-            {/* Load More Action Button Container - Only shows if more hidden elements remain */}
+            {/* Load More Action Button Container */}
             {filteredPackages.length > visibleCount && (
               <div className="w-full flex justify-center mt-8">
                 <button 
