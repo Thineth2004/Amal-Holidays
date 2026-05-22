@@ -23,6 +23,7 @@ router.post(
 // Manager only
 router.get(
     "/all",
+    authenticate,
     authorize("Manager"),
     getAllPackagesController
 );

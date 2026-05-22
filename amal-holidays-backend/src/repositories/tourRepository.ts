@@ -11,15 +11,15 @@ export const createPackageRepo = async (data: any) => {
         destination_id,
         start_date,
         end_date,
-        image_uuids,
+        image_url,
     } = data;
 
     const result = await pool.query(
         `INSERT INTO tour_package
-        (title, description, price, capacity, available_slots, destination_id, start_date, end_date, image_uuids)
+        (title, description, price, capacity, available_slots, destination_id, start_date, end_date, image_url)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
         RETURNING *`,
-        [title, description, price, capacity, available_slots, destination_id, start_date, end_date, JSON.stringify(image_uuids || [])]
+        [title, description, price, capacity, available_slots, destination_id, start_date, end_date, image_url || null]
     );
 
     return result.rows[0];
@@ -44,7 +44,6 @@ export const getAvailablePackagesRepo = async () => {
         JOIN destination d
             ON tp.destination_id = d.destination_id
         WHERE tp.available_slots > 0
-            AND tp.start_date >= CURRENT_DATE
         ORDER BY tp.start_date ASC
     `);
     
