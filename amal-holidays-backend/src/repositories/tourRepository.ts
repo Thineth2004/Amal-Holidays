@@ -12,14 +12,15 @@ export const createPackageRepo = async (data: any) => {
         start_date,
         end_date,
         image_url,
+        category,
     } = data;
 
     const result = await pool.query(
         `INSERT INTO tour_package
-        (title, description, price, capacity, available_slots, destination_id, start_date, end_date, image_url)
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+        (title, description, price, capacity, available_slots, destination_id, start_date, end_date, image_url, category)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
         RETURNING *`,
-        [title, description, price, capacity, available_slots, destination_id, start_date, end_date, image_url || null]
+        [title, description, price, capacity, available_slots, destination_id, start_date, end_date, image_url || null, category || 'All']
     );
 
     return result.rows[0];
