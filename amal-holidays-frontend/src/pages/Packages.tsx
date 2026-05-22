@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import api from '../api/axiosInstance';
+import { useParams } from 'react-router-dom';
 
 // Clean typing interface matching your database structure
 interface TourPackage {
@@ -18,12 +19,18 @@ interface TourPackage {
 const CATEGORIES = ['All', 'Adventure', 'Relaxation', 'Cultural', 'Family', 'Heritage'];
 
 const Packages: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Grabs the destination_id out of the URL string
   const [packages, setPackages] = useState<TourPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [maxPrice, setMaxPrice] = useState(5000); // Bumped default slider to match max capability
   const [visibleCount, setVisibleCount] = useState(6); // Tracks pagination limits
+
+  useEffect(() => {
+    // Send this ID to your backend endpoint to load packages for just this place!
+    console.log("Fetching tour packages for destination ID:", id);
+  }, [id]);
 
   // 1. Fetch Dynamic Data on Mount
   useEffect(() => {
