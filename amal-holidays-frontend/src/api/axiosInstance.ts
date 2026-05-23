@@ -26,7 +26,7 @@ export interface PackageData {
   start_date: string;
   end_date: string;
   capacity: number;
-  image_url: string;
+  image_uuids: string[];
 }
 
 // Create Axios Instance
