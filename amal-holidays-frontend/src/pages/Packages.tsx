@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import api from '../api/axiosInstance';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 
 // Clean typing interface matching your database structure
 interface TourPackage {
@@ -46,10 +46,7 @@ const Packages: React.FC = () => {
       });
   }, []);
 
-  // Reset visible items back to default limit whenever filters change
-  useEffect(() => {
-    setVisibleCount(6);
-  }, [searchQuery, activeCategory, maxPrice]);
+  // Visible count resets to 6 whenever filters change, handled in onChange/onClick events
 
   // 2. Functional Filter Engine
   const filteredPackages = useMemo(() => {
@@ -90,7 +87,10 @@ const Packages: React.FC = () => {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setVisibleCount(6);
+                }}
                 className="w-full pl-12 pr-4 py-3 rounded-full bg-[#f6f3f2] border-transparent focus:border-[#0059bb] focus:ring-2 focus:ring-[#0059bb]/20 transition-all text-sm outline-none placeholder:text-[#414754]/70"
                 placeholder="Where to?"
               />
@@ -106,7 +106,10 @@ const Packages: React.FC = () => {
               {CATEGORIES.map(cat => (
                 <button
                   key={cat}
-                  onClick={() => setActiveCategory(cat)}
+                  onClick={() => {
+                    setActiveCategory(cat);
+                    setVisibleCount(6);
+                  }}
                   className={`px-4 py-2 border rounded-full text-xs font-semibold transition-all ${
                     activeCategory === cat
                       ? 'bg-[#0059bb] text-white shadow-sm'
@@ -133,7 +136,10 @@ const Packages: React.FC = () => {
               max="100000" 
               step="1000"
               value={maxPrice} 
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              onChange={(e) => {
+                setMaxPrice(Number(e.target.value));
+                setVisibleCount(6);
+              }}
               className="w-full h-2 bg-[#eae7e7] rounded-full appearance-none cursor-pointer accent-[#0059bb]"
             />
           </div>
