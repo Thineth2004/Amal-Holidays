@@ -3,6 +3,7 @@ import {
     getAllPackagesRepo,
     getAvailablePackagesRepo,
     getPackageByIdRepo,
+    updatePackageRepo,
 } from "../repositories/tourRepository";
 
 export const createPackage = async (data: any) => {
@@ -19,4 +20,8 @@ export const getAvailablePackages = async () => {
 
 export const getPackageById = async (id: number) => {
     return await getPackageByIdRepo(id);
+};
+
+export const updatePackage = async (id: number, data: any) => {
+    return await updatePackageRepo(id, data);
 };
