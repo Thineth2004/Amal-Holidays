@@ -1,5 +1,18 @@
 import { pool } from "../config/db";
 
+export const getAllBookingsRepo = async () => {
+    try {
+        const result = await pool.query(
+            `SELECT booking_id, booking_date, travel_date, no_of_travelers, status, tourist_id, package_id, total_price
+            FROM booking
+            ORDER BY booking_date DESC`
+        );
+        return result.rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const createBookingRepo = async (data: any) => {
     const client = await pool.connect();
 
