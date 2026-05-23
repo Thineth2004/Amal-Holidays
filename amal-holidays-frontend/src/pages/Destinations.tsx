@@ -147,9 +147,6 @@ const Destinations: React.FC = () => {
                   <div className="p-6 flex flex-col flex-grow bg-white">
                     <div className="flex justify-between items-start mb-1">
                       <h2 className="text-2xl font-bold text-[#1b1c1c]">{dest.name}</h2>
-                      <span className="text-sm text-[#414754] mt-1 font-semibold whitespace-nowrap">
-                        from Rs. {Number(dest.priceFrom).toLocaleString()}
-                      </span>
                     </div>
                     <p className="text-xs text-[#717786] font-medium flex items-center gap-0.5 mb-3">
                       <span className="material-symbols-outlined text-[14px]">location_on</span>
