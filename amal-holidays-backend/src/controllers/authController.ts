@@ -28,7 +28,7 @@ export const login = async (req: Request, res: Response) => {
         res.json({
             message: "Login successful",
             token,
-            safeUser,
+            user: safeUser,
         });
     } catch (error: any) {
         res.status(400).json({ message: error.message });
@@ -45,8 +45,7 @@ export const staffManagerLogin = async (req: Request, res: Response) => {
         res.json({
             message: "Login successful",
             token,
-            name: safeUser.name,
-            role: safeUser.role,
+            user: safeUser, 
         });
     } catch (error: any) {
         res.status(400).json({ message: error.message });

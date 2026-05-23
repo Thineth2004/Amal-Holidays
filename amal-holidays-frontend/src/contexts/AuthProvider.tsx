@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, type ReactNode } from "react";
 import toast from "react-hot-toast";
 import api from "../api/axiosInstance";
-import type { User, LoginResponse } from "../types/auth";
+import type { User } from "../types/auth";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -33,8 +33,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Clear corrupted data
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-      }
- finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -69,10 +68,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const { token: newToken, safeUser } = response.data;
 
           localStorage.setItem("token", newToken);
-          localStorage.setItem("user", JSON.stringify(safeUser));
+          localStorage.setItem("user", JSON.stringify(loggedInUser));
 
           setToken(newToken);
-          setUser(safeUser);
+          setUser(loggedInUser);
       } catch (error: unknown) {
           const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Login failed. Please try again.";
           throw new Error(message, { cause: error });
@@ -97,6 +96,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       logout,
       isAuthenticated: !!token
   }), [user, token, loading, login, register, logout]);
+
   return (
     <AuthContext.Provider value={contextValue}>
       {children}
