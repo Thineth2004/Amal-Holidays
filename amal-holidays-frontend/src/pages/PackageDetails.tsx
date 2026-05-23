@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 import { fetchPackageById, type PackageData } from '../api/axiosInstance';
 
@@ -20,8 +20,12 @@ const PackageDetails: React.FC = () => {
         const data = await fetchPackageById(packageId);
         setTourPackage(data);
         setError(null);
-      } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to download package details.');
+      } catch (err: unknown) {
+        if (typeof err === 'object' && err !== null && 'response' in err) {
+          setError((err as { response: { data: { message: string } } }).response.data.message);
+        } else {
+          setError('Failed to download package details.');
+        }
       } finally {
         setIsLoading(false);
       }
