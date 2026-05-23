@@ -1,7 +1,17 @@
 import { Response } from "express";
 import { createBooking } from "../services/bookingService";
+import { getAllBookingsRepo } from "../repositories/bookingRepository";
 import { catchAsync } from "../utils/catchAsync"; 
-import { AppError } from "../utils/AppError";     
+import { AppError } from "../utils/AppError";
+
+export const getAllBookingsController = catchAsync(async (req: any, res: Response) => {
+    const bookings = await getAllBookingsRepo();
+    
+    res.status(200).json({
+        success: true,
+        data: bookings
+    });
+});
 
 export const createBookingController = catchAsync(async (req: any, res: Response) => {
     const { package_id, no_of_travelers, travel_date } = req.body;
