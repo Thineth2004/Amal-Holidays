@@ -3,6 +3,9 @@ import StaffLogin from './pages/StaffLogin'
 import Destinations from './pages/Destinations'
 import Layout from './components/Layout'
 import Packages from './pages/Packages'
+import Bookings from './pages/Bookings'
+import Payments from './pages/Payments'
+import Users from './pages/Users'
 
 
 const App = () => {
@@ -15,11 +18,11 @@ const App = () => {
           {/* Admin Layout Routes */}
           <Route element={<Layout />}>
             <Route path="/" element={<div className="p-8">Dashboard Content Coming Soon</div>} />
-            <Route path="/bookings" element={<div className="p-8">Bookings Content Coming Soon</div>} />
+            <Route path="/bookings" element={<Bookings />} />
             <Route path="/destinations" element={<Destinations />} />
             <Route path="/packages" element={<Packages />} />
-            <Route path="/payments" element={<div className="p-8">Payments Content Coming Soon</div>} />
-            <Route path="/users" element={<div className="p-8">Users Content Coming Soon</div>} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/users" element={<Users />} />
             <Route path="/management" element={<div className="p-8">Management Content Coming Soon</div>} />
             <Route path="/settings" element={<div className="p-8">Settings Content Coming Soon</div>} />
           </Route>
