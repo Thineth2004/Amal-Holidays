@@ -12,7 +12,6 @@ export interface DestinationData {
   image_url: string;
   image_uuid?: string;
   category: string;
-  priceFrom: string | number;
   rating: number;
 }
 
