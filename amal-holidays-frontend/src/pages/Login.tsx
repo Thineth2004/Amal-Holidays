@@ -22,10 +22,10 @@ const Login: React.FC = () => {
     }
   }, [isAuthenticated, loading, navigate]);
 
+  // FIX: Read explicitly from the input's "name" property
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { type, value } = e.target;
-    const field = type === 'email' ? 'email' : 'password';
-    setCredentials((prev) => ({ ...prev, [field]: value }));
+    const { name, value } = e.target;
+    setCredentials((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -36,7 +36,7 @@ const Login: React.FC = () => {
       await login(credentials.email, credentials.password);
       toast.success('Login successful!');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Login failed');
+      toast.error((err as Error).message || 'Login failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -62,18 +62,15 @@ const Login: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
       </div>
 
-      {/* Login Form Container - Reduced max-width for better desktop focus */}
+      {/* Login Form Container */}
       <div className="relative z-10 w-full max-w-[400px] px-6">
-        {/* Padding reduced from p-12 to p-8 */}
         <div className="bg-white/70 backdrop-blur-2xl border border-white/30 rounded-[2rem] p-8 shadow-2xl">
           
           <div className="mb-8 text-center">
-            {/* Scaled from 3xl to 2xl */}
             <h1 className="text-2xl font-bold text-[#1b1c1c] mb-1.5">Welcome Back</h1>
             <p className="text-sm text-[#414754]">Continue your journey to <span className='font-nav-md'>Amal Holidays</span></p>
           </div>
 
-          {/* space-y-6 reduced to space-y-4 */}
           <form onSubmit={handleLogin} className="space-y-4">
             
             {/* Email Field */}
@@ -82,6 +79,7 @@ const Login: React.FC = () => {
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#717786] text-lg">mail</span>
                 <input
+                  name="email" // Added explicit name property
                   className="w-full bg-white/50 border border-[#c1c6d7] rounded-full py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#0059bb] focus:border-transparent transition-all outline-none text-sm disabled:opacity-50"
                   placeholder="name@example.com"
                   type="email"
@@ -102,6 +100,7 @@ const Login: React.FC = () => {
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#717786] text-lg">lock</span>
                 <input
+                  name="password" // Added explicit name property
                   className="w-full bg-white/50 border border-[#c1c6d7] rounded-full py-3 pl-11 pr-4 focus:ring-2 focus:ring-[#0059bb] focus:border-transparent transition-all outline-none text-sm disabled:opacity-50"
                   placeholder="••••••••"
                   type="password"
@@ -113,7 +112,7 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            {/* CTA Button - py-4 reduced to py-3, text-lg to text-base */}
+            {/* CTA Button */}
             <button
               type="submit"
               disabled={isSubmitting}

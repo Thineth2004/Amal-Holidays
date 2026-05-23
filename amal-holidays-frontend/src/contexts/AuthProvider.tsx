@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = useCallback(async (email: string, password: string) => {
       try {
-          const response = await api.post<LoginResponse>("/api/auth/login", { email, password });
+          const response = await api.post<LoginResponse>("/auth/login", { email, password });
           const { token: newToken, safeUser } = response.data;
 
           localStorage.setItem("token", newToken);
@@ -81,7 +81,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const register = useCallback(async (name: string, email: string, password: string, role: string) => {
       try {
-          await api.post("/api/auth/register", { name, email, password, role });
+          await api.post("/auth/register", { name, email, password, role });
       } catch (error: unknown) {
           const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Registration failed. Please try again.";
           throw new Error(message, { cause: error });
