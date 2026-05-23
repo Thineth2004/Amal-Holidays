@@ -28,6 +28,47 @@ export interface PackageData {
   image_uuids: string[];
 }
 
+export interface BookingData {
+  booking_id: number;
+  travel_date: string;
+  no_of_travelers: number;
+  status: string;
+  tourist_id: number;
+  package_id: number;
+  total_price: number;
+}
+
+export interface BookingResponse {
+  success: boolean;
+  message: string;
+  data: BookingData;
+}
+
+export interface PaymentData {
+  payment_id: number;
+  booking_id: number;
+  amount: number;
+  payment_method: string;
+  status: string;
+}
+
+export interface PaymentResponse {
+  message: string;
+  payment: PaymentData;
+}
+
+export interface CreateBookingRequest {
+  package_id: number;
+  no_of_travelers: number;
+  travel_date: string;
+}
+
+export interface CreatePaymentRequest {
+  booking_id: number;
+  amount: number;
+  payment_method: string;
+}
+
 // Create Axios Instance
 const api = axios.create({
   baseURL: backend_url,
@@ -74,6 +115,16 @@ export const createDestination = async (data: Partial<DestinationData>): Promise
 // Fetch full information for a single specific tour package row
 export const fetchPackageById = async (packageId: string | number): Promise<PackageData> => {
   const response = await api.get(`/packages/${packageId}`);
+  return response.data;
+};
+
+export const createBooking = async (data: CreateBookingRequest): Promise<BookingResponse> => {
+  const response = await api.post<BookingResponse>(`/bookings`, data);
+  return response.data;
+};
+
+export const createPayment = async (data: CreatePaymentRequest): Promise<PaymentResponse> => {
+  const response = await api.post<PaymentResponse>(`/payments`, data);
   return response.data;
 };
 
