@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 import { fetchPackageById, type PackageData } from '../api/axiosInstance';
+import { backend_url } from '../config/config';
 
 const PackageDetails: React.FC = () => {
   const { packageId } = useParams<{ packageId: string }>();
@@ -75,13 +76,35 @@ const PackageDetails: React.FC = () => {
         
         {/* Left Aspect Side: Main Banner Imagery and Info Writeup */}
         <section className="lg:col-span-2 flex flex-col gap-6">
-          <div className="w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-sm bg-gray-100">
-            <img 
-              src={tourPackage.image_url || 'https://images.unsplash.com/photo-1544834082-80c05479a83d?q=80&w=1200'} 
-              alt={tourPackage.title} 
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {tourPackage.image_uuids && tourPackage.image_uuids.length > 0 ? (
+            <div className={`grid gap-2 ${tourPackage.image_uuids.length >= 3 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 md:grid-cols-2'} rounded-2xl overflow-hidden aspect-[16/9] bg-gray-100 shadow-sm`}>
+              <div className={`w-full h-full col-span-1 ${tourPackage.image_uuids.length >= 3 ? 'md:col-span-2 row-span-2' : ''}`}>
+                <img 
+                  src={`${backend_url}/images/${tourPackage.image_uuids[0]}`} 
+                  alt={tourPackage.title} 
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+              
+              {tourPackage.image_uuids.slice(1, 5).map((uuid, index) => (
+                <div key={uuid} className="hidden md:block w-full h-full">
+                  <img 
+                    src={`${backend_url}/images/${uuid}`} 
+                    alt={`${tourPackage.title} image ${index + 2}`} 
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-sm bg-gray-100">
+              <img 
+                src={`${backend_url}/images/${tourPackage.image_uuids[0]}`} 
+                alt={tourPackage.title} 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
 
           <div>
             <h1 className="text-3xl md:text-4xl font-extrabold text-[#1b1c1c] tracking-tight leading-tight mb-3">
