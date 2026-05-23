@@ -1,5 +1,18 @@
 import { pool } from "../config/db";
 
+export const getAllUsers = async () => {
+    try {
+        const result = await pool.query(
+            `SELECT user_id, name, email, phone, role, status, created_at
+            FROM users
+            ORDER BY created_at DESC`
+        );
+        return result.rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const findUserByEmail = async (email: string) => {
     const result = await pool.query(
         "SELECT * FROM users WHERE email = $1",
