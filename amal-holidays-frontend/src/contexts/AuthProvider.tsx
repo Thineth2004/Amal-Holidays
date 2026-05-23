@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, type ReactNode } from "react";
 import toast from "react-hot-toast";
 import api from "../api/axiosInstance";
-import type { User } from "../types/auth";
+import type { LoginResponse, User } from "../types/auth";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -68,10 +68,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const { token: newToken, safeUser } = response.data;
 
           localStorage.setItem("token", newToken);
-          localStorage.setItem("user", JSON.stringify(loggedInUser));
+          localStorage.setItem("user", JSON.stringify(safeUser));
 
           setToken(newToken);
-          setUser(loggedInUser);
+          setUser(safeUser);
       } catch (error: unknown) {
           const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Login failed. Please try again.";
           throw new Error(message, { cause: error });
