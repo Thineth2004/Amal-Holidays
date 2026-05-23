@@ -4,6 +4,7 @@ import {
     getAllPackages,
     getAvailablePackages,
     getPackageById,
+    updatePackage,
 } from "../services/packageService";
 
 // Manager 
@@ -32,5 +33,15 @@ export const getAvailablePackagesController = async (req: Request, res: Response
 export const getPackageController = async (req: Request, res: Response) => {
     const pkg = await getPackageById(Number(req.params.id));
     res.json(pkg);
+};
+
+// Manager
+export const updatePackageController = async (req: Request, res: Response) => {
+    try {
+        const pkg = await updatePackage(Number(req.params.id), req.body);
+        res.json(pkg);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
 };
 

@@ -64,13 +64,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = useCallback(async (email: string, password: string) => {
       try {
-          // Destructuring updated to accept 'user' from backend payload
-          const response = await api.post("/auth/login", { email, password });
-          const { token: newToken, user: loggedInUser } = response.data;
-
-          if (!newToken || !loggedInUser) {
-              throw new Error("Invalid response format from server.");
-          }
+          const response = await api.post<LoginResponse>("/auth/login", { email, password });
+          const { token: newToken, safeUser } = response.data;
 
           localStorage.setItem("token", newToken);
           localStorage.setItem("user", JSON.stringify(loggedInUser));

@@ -4,11 +4,11 @@ import {
     getAllPackagesController,
     getAvailablePackagesController,
     getPackageController,
+    updatePackageController,
 } from "../controllers/packageController";
 
 import { authenticate } from "../middlewares/authMiddleware";
 import { authorize } from "../middlewares/roleMiddleware";
-import { getAvailablePackages, getPackageById } from "../services/packageService";
 
 const router = express.Router();
 
@@ -31,7 +31,6 @@ router.get(
 // All logged users
 router.get(
     "/available",
-    authenticate,
     getAvailablePackagesController
 );
 
@@ -39,6 +38,14 @@ router.get(
 router.get(
     "/:id",
     getPackageController
+);
+
+// Manager only
+router.put(
+    "/:id",
+    authenticate,
+    authorize("Manager"),
+    updatePackageController
 );
 
 export default router;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import { useNavigate } from 'react-router'; // 1. Import useNavigate
 import { fetchDestinations, type DestinationData } from '../api/axiosInstance'; 
+import { backend_url } from '../config/config';
 
 const FILTERS = ['All', 'Adventure', 'Relaxation', 'Cultural', 'Heritage'];
 
@@ -20,8 +21,12 @@ const Destinations: React.FC = () => {
         const data = await fetchDestinations();
         setDestinations(data);
         setError(null);
-      } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to connect to the server.');
+      } catch (err: unknown) {
+        if (typeof err === 'object' && err !== null && 'response' in err) {
+          setError((err as { response: { data: { message: string } } }).response.data.message);
+        } else {
+          setError('Failed to connect to the server.');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -124,7 +129,7 @@ const Destinations: React.FC = () => {
                   {/* Image Container */}
                   <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100">
                     <img
-                      src={dest.image_url || 'https://images.unsplash.com/photo-1546708973-b339540b5162?q=80&w=600'} 
+                      src={dest.image_uuid ? `${backend_url}/images/${dest.image_uuid}` : (dest.image_url || 'https://images.unsplash.com/photo-1546708973-b339540b5162?q=80&w=600')} 
                       alt={dest.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       loading="lazy"
@@ -142,9 +147,6 @@ const Destinations: React.FC = () => {
                   <div className="p-6 flex flex-col flex-grow bg-white">
                     <div className="flex justify-between items-start mb-1">
                       <h2 className="text-2xl font-bold text-[#1b1c1c]">{dest.name}</h2>
-                      <span className="text-sm text-[#414754] mt-1 font-semibold whitespace-nowrap">
-                        from Rs. {Number(dest.priceFrom).toLocaleString()}
-                      </span>
                     </div>
                     <p className="text-xs text-[#717786] font-medium flex items-center gap-0.5 mb-3">
                       <span className="material-symbols-outlined text-[14px]">location_on</span>

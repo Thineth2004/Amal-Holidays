@@ -1,5 +1,18 @@
 import { pool } from "../config/db";
 
+export const getAllPaymentsRepo = async () => {
+    try {
+        const result = await pool.query(
+            `SELECT payment_id, amount, payment_date, method, status, booking_id
+            FROM payment
+            ORDER BY payment_date DESC`
+        );
+        return result.rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const createPaymentRepo = async (data: any) => {
     const { booking_id, amount, payment_method } = data;
 
@@ -9,14 +22,14 @@ export const createPaymentRepo = async (data: any) => {
         await client.query("BEGIN");
 
         const result = await client.query(
-            `INSERT INTO payment (booking_id, amount, payment_method, status)
-            VALUES ($1, $2, $3, 'PAID')
+            `INSERT INTO payment (booking_id, amount, method, status)
+            VALUES ($1, $2, $3, 'Completed')
             RETURNING *`,
             [booking_id, amount, payment_method]
         );
 
         await client.query(
-            `UPDATE booking SET status = 'PAID' WHERE booking_id = $1`,
+            `UPDATE booking SET status = 'Confirmed' WHERE booking_id = $1`,
             [booking_id]
         );
 

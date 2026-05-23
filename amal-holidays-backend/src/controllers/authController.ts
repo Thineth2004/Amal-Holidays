@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { registerUser, loginUser, staffManagerLoginUser } from "../services/authService";
+import { getAllUsers } from "../repositories/userRepository";
 
 export const register = async (req: Request, res: Response) => {
     try {
@@ -45,6 +46,18 @@ export const staffManagerLogin = async (req: Request, res: Response) => {
             message: "Login successful",
             token,
             user: safeUser, 
+        });
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const getAllUsersController = async (req: Request, res: Response) => {
+    try {
+        const users = await getAllUsers();
+        res.status(200).json({
+            success: true,
+            data: users
         });
     } catch (error: any) {
         res.status(400).json({ message: error.message });
