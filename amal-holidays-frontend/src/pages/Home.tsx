@@ -277,13 +277,6 @@ const Home = () => {
                       <span className="material-symbols-outlined text-[14px]">location_on</span>
                       {dest.location}
                     </p>
-                    
-                    <div className="mt-4 pt-3 border-t border-[#eae7e7]/60 flex items-center justify-between">
-                      <span className="text-xs text-[#414754] font-medium">Starting from</span>
-                      <span className="font-extrabold text-[#1b1c1c] text-base">
-                        Rs. {Number(dest.priceFrom || 0).toLocaleString()}
-                      </span>
-                    </div>
                   </div>
                 </div>
               ))}
