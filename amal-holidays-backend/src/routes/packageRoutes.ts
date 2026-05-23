@@ -31,7 +31,6 @@ router.get(
 // All logged users
 router.get(
     "/available",
-    authenticate,
     getAvailablePackagesController
 );
 
