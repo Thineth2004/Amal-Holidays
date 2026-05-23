@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Destinations from './pages/Destinations'
 import Packages from './pages/Packages'
 import PackageDetails from './pages/PackageDetails'
+import Checkout from './pages/Checkout'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import PasswordReset from './pages/ResetPassword'
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/destinations/:id/packages" element={<Packages />} />
           <Route path="/packages" element={<Packages />} />
           <Route path="/packages/:packageId" element={<PackageDetails />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<Login />} />
           <Route path="/password-reset" element={<PasswordReset />} />
