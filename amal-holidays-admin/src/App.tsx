@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import StaffLogin from './pages/StaffLogin'
 import Destinations from './pages/Destinations'
 import Layout from './components/Layout'
+import Packages from './pages/Packages'
 
 
 const App = () => {
@@ -16,7 +17,7 @@ const App = () => {
             <Route path="/" element={<div className="p-8">Dashboard Content Coming Soon</div>} />
             <Route path="/bookings" element={<div className="p-8">Bookings Content Coming Soon</div>} />
             <Route path="/destinations" element={<Destinations />} />
-            <Route path="/packages" element={<div className="p-8">Packages Content Coming Soon</div>} />
+            <Route path="/packages" element={<Packages />} />
             <Route path="/payments" element={<div className="p-8">Payments Content Coming Soon</div>} />
             <Route path="/users" element={<div className="p-8">Users Content Coming Soon</div>} />
             <Route path="/management" element={<div className="p-8">Management Content Coming Soon</div>} />
