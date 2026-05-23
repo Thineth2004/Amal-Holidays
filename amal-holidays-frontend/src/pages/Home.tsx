@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 import { fetchDestinations, type DestinationData } from '../api/axiosInstance';
+import { backend_url } from '../config/config';
 
 const Home = () => {
   const [destinations, setDestinations] = useState<DestinationData[]>([]);
@@ -260,7 +261,7 @@ const Home = () => {
                   <div className="aspect-[4/3] overflow-hidden relative bg-gray-100">
                     <img
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      src={dest.image_url || "https://images.unsplash.com/photo-1546708973-b339540b5162?q=80&w=600"}
+                      src={dest.image_uuid ? `${backend_url}/images/${dest.image_uuid}` : "https://images.unsplash.com/photo-1546708973-b339540b5162?q=80&w=600"}
                       alt={dest.name}
                     />
                     <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center justify-center shadow-sm">
