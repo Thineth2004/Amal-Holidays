@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 import { fetchPackageById, type PackageData } from '../api/axiosInstance';
 import { backend_url } from '../config/config';
+import { useAuth } from '../hooks/useAuth';
 
 const INCLUSIONS = [
   { icon: 'flight_takeoff', title: 'Premium Flights', desc: 'Round-trip flights included' },
@@ -41,9 +42,19 @@ const PackageDetails: React.FC = () => {
     loadDetails();
   }, [packageId]);
 
+  const { isAuthenticated } = useAuth();
+
   const handleBooking = () => {
-    toast.success(`Initializing secure checkout for ${tourPackage?.title}!`);
-    // Future expansion: navigate(`/checkout?package=${packageId}`);
+    if (!tourPackage) return;
+
+    if (!isAuthenticated) {
+      toast('Please sign in to continue to checkout.', { icon: '🔒' });
+      navigate('/signin', { state: { from: `/packages/${packageId}` } });
+      return;
+    }
+
+    toast.success(`Initializing secure checkout for ${tourPackage.title}!`);
+    navigate('/checkout', { state: { packageId: tourPackage.package_id } });
   };
 
   if (isLoading) {
