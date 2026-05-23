@@ -21,6 +21,7 @@ interface Package {
 const Packages: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPackage, setEditingPackage] = useState<Package | null>(null);
   const [packages, setPackages] = useState<Package[]>([]);
 
   useEffect(() => {
@@ -42,13 +43,20 @@ const Packages: React.FC = () => {
     fetchPackages();
   }, []);
 
-  const handleAddSuccess = (newPackage: Package) => {
-    setPackages([...packages, {
-      ...newPackage,
-      imageUrl: newPackage.image_uuids && newPackage.image_uuids.length > 0 
-        ? `${backend_url}/api/images/${newPackage.image_uuids[0]}` 
+  const handleSaveSuccess = (savedPkg: Package) => {
+    const pkgWithImage = {
+      ...savedPkg,
+      imageUrl: savedPkg.image_uuids && savedPkg.image_uuids.length > 0 
+        ? `${backend_url}/api/images/${savedPkg.image_uuids[0]}` 
         : undefined
-    }]);
+    };
+
+    if (editingPackage) {
+      setPackages(packages.map(p => p.package_id === savedPkg.package_id ? pkgWithImage : p));
+    } else {
+      setPackages([...packages, pkgWithImage]);
+    }
+    setEditingPackage(null);
     setIsModalOpen(false);
   };
 
@@ -56,8 +64,12 @@ const Packages: React.FC = () => {
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
       <AddPackageModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSuccess={(newPkg: Package) => handleAddSuccess(newPkg)} 
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingPackage(null);
+        }} 
+        onSuccess={handleSaveSuccess} 
+        editData={editingPackage}
       />
       <div className="px-8 pb-12 pt-4">
         {/* Integrated Control Bar - Improved Visibility */}
@@ -74,7 +86,10 @@ const Packages: React.FC = () => {
           </div>
 
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setEditingPackage(null);
+              setIsModalOpen(true);
+            }}
             className="flex items-center gap-2 bg-[#0059bb] text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-[#004494] transition-all shadow-lg active:scale-95"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
@@ -118,6 +133,17 @@ const Packages: React.FC = () => {
 
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end gap-3">
+                      <button
+                        title="Edit Package"
+                        onClick={() => {
+                          setEditingPackage(pkg);
+                          setIsModalOpen(true);
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 text-[#0059bb] bg-white border border-slate-200 hover:bg-blue-50 hover:border-blue-200 rounded-xl transition-all font-bold text-xs"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">edit</span>
+                        Edit
+                      </button>
                       <button
                         title="Delete Package"
                         className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 rounded-xl transition-all font-bold text-xs"
