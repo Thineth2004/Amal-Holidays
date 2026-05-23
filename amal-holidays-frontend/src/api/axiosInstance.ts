@@ -10,6 +10,7 @@ export interface DestinationData {
   location: string;
   description: string;
   image_url: string;
+  image_uuid?: string;
   category: string;
   priceFrom: string | number;
   rating: number;
