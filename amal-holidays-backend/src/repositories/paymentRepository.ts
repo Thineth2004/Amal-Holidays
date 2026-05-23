@@ -1,5 +1,18 @@
 import { pool } from "../config/db";
 
+export const getAllPaymentsRepo = async () => {
+    try {
+        const result = await pool.query(
+            `SELECT payment_id, amount, payment_date, method, status, booking_id
+            FROM payment
+            ORDER BY payment_date DESC`
+        );
+        return result.rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const createPaymentRepo = async (data: any) => {
     const { booking_id, amount, payment_method } = data;
 
