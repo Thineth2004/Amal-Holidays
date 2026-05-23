@@ -18,7 +18,7 @@ export const createBookingRepo = async (data: any) => {
             `SELECT available_slots, price
             FROM tour_package
             WHERE package_id = $1
-            FROM UPDATE`,
+            FOR UPDATE`,
             [package_id]
         );
 
@@ -38,7 +38,7 @@ export const createBookingRepo = async (data: any) => {
         const bookingResult = await client.query(
             `INSERT INTO booking
             (travel_date, no_of_travelers, status, tourist_id, package_id, total_price)
-            VALUES ($1,$2,'CONFIRMED',$3,$4,$5)
+            VALUES ($1,$2,'Pending',$3,$4,$5)
             RETURNING *`,
             [travel_date, no_of_travelers, tourist_id, package_id, total_price]
         );
