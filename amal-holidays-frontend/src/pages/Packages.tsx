@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import api from '../api/axiosInstance';
 import { useParams, useNavigate } from 'react-router';
+import { backend_url } from '../config/config';
 
 // Clean typing interface matching your database structure
 interface TourPackage {
@@ -10,6 +11,7 @@ interface TourPackage {
   description: string;
   duration: number;
   destination_name: string;
+  image_uuids: string[]; // Assuming your backend sends an array of image UUIDs
   price: number;
   category?: string;
   available_slots: number;
@@ -164,7 +166,7 @@ const Packages: React.FC = () => {
                   {/* Main Card Image Viewport */}
                   <div className="w-full aspect-[4/3] overflow-hidden relative bg-[#eae7e7]">
                     <img
-                      src={pkg.image_url || "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?q=80&w=1000"}
+                      src={backend_url + '/images/' + pkg.image_uuids[0]}
                       alt={pkg.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
