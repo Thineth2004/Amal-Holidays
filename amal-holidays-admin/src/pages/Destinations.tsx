@@ -51,13 +51,23 @@ const Destinations: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const formatDeleteError = (error: unknown, fallback: string) => {
+    const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+      (error as Error).message ||
+      fallback;
+
+    return /foreign key|violates foreign key|fk_package_booking/i.test(message)
+      ? 'Please delete related Bookings'
+      : message;
+  };
+
   const handleDeleteDestination = async (destinationId: number) => {
     try {
       await api.delete(`/api/destinations/${destinationId}`);
       setDestinations(destinations.filter((dest) => dest.destination_id !== destinationId));
       toast.success('Destination deleted successfully.');
     } catch (error: unknown) {
-      toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to delete destination');
+      toast.error(formatDeleteError(error, 'Failed to delete destination'));
     }
   };
 
