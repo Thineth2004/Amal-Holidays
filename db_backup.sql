@@ -928,7 +928,7 @@ ALTER TABLE ONLY public.notification
 
 -- Completed on 2026-05-24 23:35:08
 
--- Insert default admin
+-- Insert default admin password: admin123
 INSERT INTO public.users (name, email, password, phone, role, status) 
 VALUES ('Admin', 'admin@amal-holidays.com', '$2b$10$XHLsBGg7iHcxnw6nYekHYO6Em2/tGRMdyijDfu6wOWu3x4zEZ1R2m', '0711753053', 'Manager', 'Active');
 
