@@ -952,6 +952,79 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Inquiries",
+            "item": [
+                {
+                    "name": "Create Inquiry (Public)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Test User\",\n    \"contact\": \"test@test.com\",\n    \"subject\": \"General Question\",\n    \"content\": \"Hello world\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/inquiries",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inquiries"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Inquiries (Admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/inquiries",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inquiries"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark Inquiry Reviewed (Admin)",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/inquiries/:id/review",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inquiries",
+                                ":id",
+                                "review"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
         }
     ],
     "event": [
