@@ -19,6 +19,6 @@ router.post("/", authenticate, authorize("Manager"), createDriverController);
 router.put("/:id", authenticate, authorize("Manager"), updateDriverController);
 router.delete("/:id", authenticate, authorize("Manager"), deleteDriverController);
 
-router.get("/:id/bookings", authenticate, authorize("Manager"), getDriverBookingsController);
+router.get("/:id/bookings", authenticate, authorize("Manager", "Driver"), getDriverBookingsController);
 
 export default router;
