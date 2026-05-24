@@ -63,13 +63,23 @@ const Packages: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const formatDeleteError = (error: unknown, fallback: string) => {
+    const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+      (error as Error).message ||
+      fallback;
+
+    return /foreign key|violates foreign key|fk_package_booking/i.test(message)
+      ? 'Please delete related Bookings'
+      : message;
+  };
+
   const handleDeletePackage = async (packageId: number) => {
     try {
       await api.delete(`/api/packages/${packageId}`);
       setPackages(packages.filter((pkg) => pkg.package_id !== packageId));
       toast.success('Package deleted successfully.');
     } catch (error: unknown) {
-      toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to delete package');
+      toast.error(formatDeleteError(error, 'Failed to delete package'));
     }
   };
 
