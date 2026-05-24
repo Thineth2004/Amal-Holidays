@@ -3,6 +3,7 @@ import AddPackageModal from '../components/AddPackageModal';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
 import { backend_url } from '../config/config';
+import Bookings from './Bookings';
 
 interface Package {
   package_id: number;
@@ -23,6 +24,8 @@ const Packages: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPackage, setEditingPackage] = useState<Package | null>(null);
   const [packages, setPackages] = useState<Package[]>([]);
+  const [showBookingsModal, setShowBookingsModal] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -70,8 +73,41 @@ const Packages: React.FC = () => {
     }
   };
 
+  const handleViewBookings = (packageId: number) => {
+    setSelectedPackageId(packageId);
+    setShowBookingsModal(true);
+  };
+
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
+      {showBookingsModal && selectedPackageId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
+            <div className="flex items-center justify-between px-8 py-5 border-b border-slate-200 bg-slate-50">
+              <h2 className="text-lg font-bold text-[#1b1c1c]">Bookings for Package #{selectedPackageId}</h2>
+              <button
+                onClick={() => {
+                  setShowBookingsModal(false);
+                  setSelectedPackageId(null);
+                }}
+                className="text-slate-600 hover:text-slate-800 transition-colors"
+              >
+                <span className="material-symbols-outlined text-[24px]">close</span>
+              </button>
+            </div>
+            <div className="overflow-y-auto flex-1">
+              <Bookings
+                filterType="package"
+                filterId={selectedPackageId}
+                onClose={() => {
+                  setShowBookingsModal(false);
+                  setSelectedPackageId(null);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       <AddPackageModal 
         isOpen={isModalOpen} 
         onClose={() => {
@@ -143,6 +179,14 @@ const Packages: React.FC = () => {
 
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end gap-3">
+                      <button
+                        title="View Related Bookings"
+                        onClick={() => handleViewBookings(pkg.package_id)}
+                        className="flex items-center gap-2 px-4 py-2 text-amber-600 bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-200 rounded-xl transition-all font-bold text-xs"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">receipt</span>
+                        Bookings
+                      </button>
                       <button
                         title="Edit Package"
                         onClick={() => {
