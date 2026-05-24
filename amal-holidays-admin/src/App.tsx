@@ -9,6 +9,7 @@ import Users from './pages/Users'
 import Hotels from './pages/Hotels'
 import Drivers from './pages/Drivers'
 import TourGuides from './pages/TourGuides'
+import Inquiries from './pages/Inquiries'
 
 
 const App = () => {
@@ -30,7 +31,7 @@ const App = () => {
             <Route path="/payments" element={<Payments />} />
             <Route path="/users" element={<Users />} />
             <Route path="/management" element={<div className="p-8">Management Content Coming Soon</div>} />
-            <Route path="/settings" element={<div className="p-8">Settings Content Coming Soon</div>} />
+            <Route path="/inquiries" element={<Inquiries />} />
           </Route>
 
           {/* Catch-all for 404s outside layout */}
