@@ -61,6 +61,32 @@ export interface CreateBookingRequest {
   package_id: number;
   no_of_travelers: number;
   travel_date: string;
+  hotel_id?: number;
+  hotel_rooms?: number;
+  hotel_cost?: number;
+  driver_id?: number;
+  driver_cost?: number;
+  tour_guide_id?: number;
+  tour_guide_cost?: number;
+  total_price?: number;
+}
+
+export interface HotelData {
+  hotel_id: number;
+  name: string;
+  location: string;
+  rating: number;
+  description: string;
+  price_per_night: number;
+  image_uuid?: string;
+}
+
+export interface StaffData {
+  user_id: number;
+  name: string;
+  price_per_day: number;
+  image_uuid?: string;
+  role: string;
 }
 
 export interface CreatePaymentRequest {
