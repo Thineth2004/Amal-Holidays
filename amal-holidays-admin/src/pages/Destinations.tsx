@@ -3,6 +3,7 @@ import AddDestinationModal from '../components/AddDestinationModal';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
 import { backend_url } from '../config/config';
+import Bookings from './Bookings';
 
 interface Destination {
   destination_id: number;
@@ -18,6 +19,8 @@ const Destinations: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDestination, setEditingDestination] = useState<Destination | null>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [showBookingsModal, setShowBookingsModal] = useState(false);
+  const [selectedDestinationId, setSelectedDestinationId] = useState<number | null>(null);
 
   const fetchDestinations = async () => {
     try {
@@ -58,6 +61,11 @@ const Destinations: React.FC = () => {
     }
   };
 
+  const handleViewBookings = (destinationId: number) => {
+    setSelectedDestinationId(destinationId);
+    setShowBookingsModal(true);
+  };
+
   useEffect(() => {
     const loadDestinations = async () => {
       await fetchDestinations();
@@ -65,16 +73,37 @@ const Destinations: React.FC = () => {
     loadDestinations();
   }, []);
 
-  const handleAddSuccess = (newDestination: Destination) => {
-    setDestinations([...destinations, {
-      ...newDestination,
-      imageUrl: `${backend_url}/api/images/${newDestination.image_uuid}`
-    }]);
-    setIsModalOpen(false);
-  };
 
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
+      {showBookingsModal && selectedDestinationId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
+            <div className="flex items-center justify-between px-8 py-5 border-b border-slate-200 bg-slate-50">
+              <h2 className="text-lg font-bold text-[#1b1c1c]">Bookings for Destination #{selectedDestinationId}</h2>
+              <button
+                onClick={() => {
+                  setShowBookingsModal(false);
+                  setSelectedDestinationId(null);
+                }}
+                className="text-slate-600 hover:text-slate-800 transition-colors"
+              >
+                <span className="material-symbols-outlined text-[24px]">close</span>
+              </button>
+            </div>
+            <div className="overflow-y-auto flex-1">
+              <Bookings
+                filterType="destination"
+                filterId={selectedDestinationId}
+                onClose={() => {
+                  setShowBookingsModal(false);
+                  setSelectedDestinationId(null);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       <AddDestinationModal 
         isOpen={isModalOpen} 
         editData={editingDestination ?? undefined}
@@ -145,6 +174,14 @@ const Destinations: React.FC = () => {
 
                     <td className="px-8 py-6 text-right">
                       <div className="flex items-center justify-end gap-3">
+                        <button
+                          title="View Related Bookings"
+                          onClick={() => handleViewBookings(dest.destination_id)}
+                          className="flex items-center gap-2 px-4 py-2 text-amber-600 bg-white border border-slate-200 hover:bg-amber-50 hover:border-amber-200 rounded-xl transition-all font-bold text-xs"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">receipt</span>
+                          Bookings
+                        </button>
                         <button
                           title="Edit Destination"
                           onClick={() => {
