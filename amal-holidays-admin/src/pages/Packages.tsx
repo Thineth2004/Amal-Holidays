@@ -60,6 +60,16 @@ const Packages: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const handleDeletePackage = async (packageId: number) => {
+    try {
+      await api.delete(`/api/packages/${packageId}`);
+      setPackages(packages.filter((pkg) => pkg.package_id !== packageId));
+      toast.success('Package deleted successfully.');
+    } catch (error: unknown) {
+      toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to delete package');
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
       <AddPackageModal 
@@ -146,6 +156,7 @@ const Packages: React.FC = () => {
                       </button>
                       <button
                         title="Delete Package"
+                        onClick={() => handleDeletePackage(pkg.package_id)}
                         className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 rounded-xl transition-all font-bold text-xs"
                       >
                         <span className="material-symbols-outlined text-[18px]">delete</span>
