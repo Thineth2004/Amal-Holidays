@@ -38,7 +38,14 @@ const Sidebar: React.FC = () => {
 
       {/* Navigation Links */}
       <nav className="flex-grow space-y-1 pr-2 overflow-y-auto custom-scrollbar">
-        {navItems.map((item) => (
+        {navItems
+          .filter((item) => {
+            if (user?.role === 'Guide' || user?.role === 'Driver') {
+              return item.label === 'Dashboard';
+            }
+            return true;
+          })
+          .map((item) => (
           <NavLink
             key={item.label}
             to={item.path}
