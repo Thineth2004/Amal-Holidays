@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AddHotelModal from '../components/AddHotelModal';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 import { backend_url } from '../config/config';
 import Bookings from './Bookings';
 
@@ -24,6 +25,7 @@ const Hotels: React.FC = () => {
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [showBookingsModal, setShowBookingsModal] = useState(false);
   const [selectedHotelId, setSelectedHotelId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   const handleSaveSuccess = (savedHotel: Hotel) => {
     const hotelWithImage = {
@@ -41,13 +43,16 @@ const Hotels: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleDeleteHotel = async (hotelId: number) => {
+  const executeDeleteHotel = async () => {
+    if (confirmDeleteId === null) return;
     try {
-      await api.delete(`/api/hotels/${hotelId}`);
-      setHotels(hotels.filter((h) => h.hotel_id !== hotelId));
+      await api.delete(`/api/hotels/${confirmDeleteId}`);
+      setHotels(hotels.filter((h) => h.hotel_id !== confirmDeleteId));
       toast.success('Hotel deleted successfully.');
     } catch (error: unknown) {
       toast.error((error as { response?: { data?: { message: string } } }).response?.data?.message || 'Failed to delete hotel');
+    } finally {
+      setConfirmDeleteId(null);
     }
   };
 
@@ -75,6 +80,13 @@ const Hotels: React.FC = () => {
 
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
+      <ConfirmDeleteModal
+        isOpen={confirmDeleteId !== null}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={executeDeleteHotel}
+        title="Delete Hotel"
+        message={`Are you sure you want to delete hotel #${confirmDeleteId}? This action cannot be undone.`}
+      />
       {/* Bookings Modal - Using inline bookings or similar */}
       {showBookingsModal && selectedHotelId && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -180,7 +192,7 @@ const Hotels: React.FC = () => {
                         <button onClick={() => { setEditingHotel(h); setIsModalOpen(true); }} className="flex items-center gap-2 px-4 py-2 text-[#0059bb] bg-white border border-slate-200 hover:bg-blue-50 rounded-xl transition-all font-bold text-xs">
                           <span className="material-symbols-outlined text-[18px]">edit</span> Edit
                         </button>
-                        <button onClick={() => handleDeleteHotel(h.hotel_id)} className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 rounded-xl transition-all font-bold text-xs">
+                        <button onClick={() => setConfirmDeleteId(h.hotel_id)} className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 rounded-xl transition-all font-bold text-xs">
                           <span className="material-symbols-outlined text-[18px]">delete</span> Delete
                         </button>
                       </div>
