@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AddPackageModal from '../components/AddPackageModal';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 import { backend_url } from '../config/config';
 import Bookings from './Bookings';
 
@@ -26,6 +27,7 @@ const Packages: React.FC = () => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [showBookingsModal, setShowBookingsModal] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -73,13 +75,16 @@ const Packages: React.FC = () => {
       : message;
   };
 
-  const handleDeletePackage = async (packageId: number) => {
+  const executeDeletePackage = async () => {
+    if (confirmDeleteId === null) return;
     try {
-      await api.delete(`/api/packages/${packageId}`);
-      setPackages(packages.filter((pkg) => pkg.package_id !== packageId));
+      await api.delete(`/api/packages/${confirmDeleteId}`);
+      setPackages(packages.filter((pkg) => pkg.package_id !== confirmDeleteId));
       toast.success('Package deleted successfully.');
     } catch (error: unknown) {
       toast.error(formatDeleteError(error, 'Failed to delete package'));
+    } finally {
+      setConfirmDeleteId(null);
     }
   };
 
@@ -90,6 +95,13 @@ const Packages: React.FC = () => {
 
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
+      <ConfirmDeleteModal
+        isOpen={confirmDeleteId !== null}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={executeDeletePackage}
+        title="Delete Package"
+        message={`Are you sure you want to delete package #${confirmDeleteId}? This action cannot be undone.`}
+      />
       {showBookingsModal && selectedPackageId && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
@@ -210,7 +222,7 @@ const Packages: React.FC = () => {
                       </button>
                       <button
                         title="Delete Package"
-                        onClick={() => handleDeletePackage(pkg.package_id)}
+                        onClick={() => setConfirmDeleteId(pkg.package_id)}
                         className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 rounded-xl transition-all font-bold text-xs"
                       >
                         <span className="material-symbols-outlined text-[18px]">delete</span>
