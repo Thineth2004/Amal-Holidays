@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
 import StaffLogin from './pages/StaffLogin'
+import Dashboard from './pages/Dashboard'
 import Destinations from './pages/Destinations'
 import Layout from './components/Layout'
 import Packages from './pages/Packages'
@@ -21,7 +22,7 @@ const App = () => {
 
           {/* Admin Layout Routes */}
           <Route element={<Layout />}>
-            <Route path="/" element={<div className="p-8">Dashboard Content Coming Soon</div>} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/destinations" element={<Destinations />} />
             <Route path="/hotels" element={<Hotels />} />
