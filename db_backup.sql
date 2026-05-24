@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict RCdsKRVYvedmvKOaWOtrxSp8BWcwMmxAvZsf2gmGkqqXalKPLTrhJV2p0LY5DjI
+\restrict jdN0gVXGvBImK3UjNxLunt1kCGmytcaVSVl1XLJWJVLteB3Pn8wCwuCNVDaer3M
 
 -- Dumped from database version 17.9
 -- Dumped by pg_dump version 17.9
 
--- Started on 2026-05-06 13:07:50
+-- Started on 2026-05-24 23:35:08
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -36,21 +36,20 @@ CREATE TYPE public.booking_status AS ENUM (
 ALTER TYPE public.booking_status OWNER TO postgres;
 
 --
--- TOC entry 876 (class 1247 OID 16398)
+-- TOC entry 927 (class 1247 OID 16668)
 -- Name: inquiry_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
 CREATE TYPE public.inquiry_status AS ENUM (
-    'Open',
-    'Resolved',
-    'Closed'
+    'Pending',
+    'Reviewed'
 );
 
 
 ALTER TYPE public.inquiry_status OWNER TO postgres;
 
 --
--- TOC entry 879 (class 1247 OID 16406)
+-- TOC entry 876 (class 1247 OID 16406)
 -- Name: payment_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -64,7 +63,7 @@ CREATE TYPE public.payment_status AS ENUM (
 ALTER TYPE public.payment_status OWNER TO postgres;
 
 --
--- TOC entry 882 (class 1247 OID 16414)
+-- TOC entry 879 (class 1247 OID 16414)
 -- Name: reservation_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -79,7 +78,7 @@ CREATE TYPE public.reservation_status AS ENUM (
 ALTER TYPE public.reservation_status OWNER TO postgres;
 
 --
--- TOC entry 885 (class 1247 OID 16424)
+-- TOC entry 882 (class 1247 OID 16424)
 -- Name: user_role; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -95,7 +94,7 @@ CREATE TYPE public.user_role AS ENUM (
 ALTER TYPE public.user_role OWNER TO postgres;
 
 --
--- TOC entry 888 (class 1247 OID 16436)
+-- TOC entry 885 (class 1247 OID 16436)
 -- Name: user_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -283,6 +282,8 @@ CREATE TABLE public.hotel (
     location character varying(150) NOT NULL,
     contact_no character varying(20),
     rating integer,
+    description text,
+    image_uuid character varying(255),
     CONSTRAINT hotel_rating_check CHECK (((rating >= 1) AND (rating <= 5)))
 );
 
@@ -316,6 +317,7 @@ CREATE TABLE public.hotel_reservation (
     status public.reservation_status DEFAULT 'Reserved'::public.reservation_status,
     booking_id integer NOT NULL,
     room_type_id integer NOT NULL,
+    rooms_count integer DEFAULT 1,
     CONSTRAINT hotel_reservation_check CHECK ((check_out > check_in))
 );
 
@@ -338,23 +340,25 @@ ALTER TABLE public.hotel_reservation ALTER COLUMN reservation_id ADD GENERATED A
 
 
 --
--- TOC entry 231 (class 1259 OID 16486)
+-- TOC entry 244 (class 1259 OID 16674)
 -- Name: inquiry; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.inquiry (
     inquiry_id integer NOT NULL,
-    message text NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    status public.inquiry_status DEFAULT 'Open'::public.inquiry_status,
-    tourist_id integer NOT NULL
+    name character varying(150) NOT NULL,
+    contact character varying(150) NOT NULL,
+    subject character varying(200) NOT NULL,
+    content text NOT NULL,
+    status public.inquiry_status DEFAULT 'Pending'::public.inquiry_status,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
 ALTER TABLE public.inquiry OWNER TO postgres;
 
 --
--- TOC entry 232 (class 1259 OID 16493)
+-- TOC entry 243 (class 1259 OID 16673)
 -- Name: inquiry_inquiry_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -369,7 +373,7 @@ ALTER TABLE public.inquiry ALTER COLUMN inquiry_id ADD GENERATED ALWAYS AS IDENT
 
 
 --
--- TOC entry 233 (class 1259 OID 16494)
+-- TOC entry 231 (class 1259 OID 16494)
 -- Name: itinerary; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -385,7 +389,7 @@ CREATE TABLE public.itinerary (
 ALTER TABLE public.itinerary OWNER TO postgres;
 
 --
--- TOC entry 234 (class 1259 OID 16500)
+-- TOC entry 232 (class 1259 OID 16500)
 -- Name: itinerary_itinerary_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -400,7 +404,7 @@ ALTER TABLE public.itinerary ALTER COLUMN itinerary_id ADD GENERATED ALWAYS AS I
 
 
 --
--- TOC entry 235 (class 1259 OID 16501)
+-- TOC entry 233 (class 1259 OID 16501)
 -- Name: notification; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -415,7 +419,7 @@ CREATE TABLE public.notification (
 ALTER TABLE public.notification OWNER TO postgres;
 
 --
--- TOC entry 236 (class 1259 OID 16507)
+-- TOC entry 234 (class 1259 OID 16507)
 -- Name: notification_notification_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -430,7 +434,7 @@ ALTER TABLE public.notification ALTER COLUMN notification_id ADD GENERATED ALWAY
 
 
 --
--- TOC entry 237 (class 1259 OID 16508)
+-- TOC entry 235 (class 1259 OID 16508)
 -- Name: payment; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -448,7 +452,7 @@ CREATE TABLE public.payment (
 ALTER TABLE public.payment OWNER TO postgres;
 
 --
--- TOC entry 238 (class 1259 OID 16514)
+-- TOC entry 236 (class 1259 OID 16514)
 -- Name: payment_payment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -463,7 +467,7 @@ ALTER TABLE public.payment ALTER COLUMN payment_id ADD GENERATED ALWAYS AS IDENT
 
 
 --
--- TOC entry 239 (class 1259 OID 16515)
+-- TOC entry 237 (class 1259 OID 16515)
 -- Name: room_type; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -479,7 +483,7 @@ CREATE TABLE public.room_type (
 ALTER TABLE public.room_type OWNER TO postgres;
 
 --
--- TOC entry 240 (class 1259 OID 16519)
+-- TOC entry 238 (class 1259 OID 16519)
 -- Name: room_type_room_type_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -494,7 +498,7 @@ ALTER TABLE public.room_type ALTER COLUMN room_type_id ADD GENERATED ALWAYS AS I
 
 
 --
--- TOC entry 241 (class 1259 OID 16520)
+-- TOC entry 239 (class 1259 OID 16520)
 -- Name: tour_package; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -517,7 +521,7 @@ CREATE TABLE public.tour_package (
 ALTER TABLE public.tour_package OWNER TO postgres;
 
 --
--- TOC entry 242 (class 1259 OID 16528)
+-- TOC entry 240 (class 1259 OID 16528)
 -- Name: tour_package_package_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -532,7 +536,7 @@ ALTER TABLE public.tour_package ALTER COLUMN package_id ADD GENERATED ALWAYS AS 
 
 
 --
--- TOC entry 243 (class 1259 OID 16529)
+-- TOC entry 241 (class 1259 OID 16529)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -544,14 +548,16 @@ CREATE TABLE public.users (
     phone character varying(20),
     role public.user_role NOT NULL,
     status public.user_status DEFAULT 'Active'::public.user_status,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    price_per_day numeric(10,2) DEFAULT 0,
+    image_uuid character varying(255)
 );
 
 
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 244 (class 1259 OID 16536)
+-- TOC entry 242 (class 1259 OID 16536)
 -- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -566,277 +572,7 @@ ALTER TABLE public.users ALTER COLUMN user_id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- TOC entry 4954 (class 0 OID 16443)
--- Dependencies: 217
--- Data for Name: booking; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.booking (booking_id, booking_date, travel_date, no_of_travelers, status, tourist_id, package_id, total_price) FROM stdin;
-\.
-
-
---
--- TOC entry 4956 (class 0 OID 16451)
--- Dependencies: 219
--- Data for Name: destination; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.destination (destination_id, name, description, location, image_uuid) FROM stdin;
-\.
-
-
---
--- TOC entry 4958 (class 0 OID 16457)
--- Dependencies: 221
--- Data for Name: driver_assignment; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.driver_assignment (driver_assignment_id, assigned_date, driver_id, booking_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4960 (class 0 OID 16462)
--- Dependencies: 223
--- Data for Name: feedback; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.feedback (feedback_id, rating, comment, created_at, tourist_id, package_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4962 (class 0 OID 16470)
--- Dependencies: 225
--- Data for Name: guide_assignment; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.guide_assignment (guide_assignment_id, assigned_date, guide_id, booking_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4964 (class 0 OID 16475)
--- Dependencies: 227
--- Data for Name: hotel; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.hotel (hotel_id, name, location, contact_no, rating) FROM stdin;
-\.
-
-
---
--- TOC entry 4966 (class 0 OID 16480)
--- Dependencies: 229
--- Data for Name: hotel_reservation; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.hotel_reservation (reservation_id, check_in, check_out, status, booking_id, room_type_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4968 (class 0 OID 16486)
--- Dependencies: 231
--- Data for Name: inquiry; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.inquiry (inquiry_id, message, created_at, status, tourist_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4970 (class 0 OID 16494)
--- Dependencies: 233
--- Data for Name: itinerary; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.itinerary (itinerary_id, day_number, activity, package_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4972 (class 0 OID 16501)
--- Dependencies: 235
--- Data for Name: notification; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.notification (notification_id, message, created_at, user_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4974 (class 0 OID 16508)
--- Dependencies: 237
--- Data for Name: payment; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.payment (payment_id, amount, payment_date, method, status, booking_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4976 (class 0 OID 16515)
--- Dependencies: 239
--- Data for Name: room_type; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.room_type (room_type_id, type_name, price_per_night, hotel_id) FROM stdin;
-\.
-
-
---
--- TOC entry 4978 (class 0 OID 16520)
--- Dependencies: 241
--- Data for Name: tour_package; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.tour_package (package_id, title, description, price, available_slots, destination_id, start_date, end_date, capacity, image_uuids) FROM stdin;
-\.
-
-
---
--- TOC entry 4980 (class 0 OID 16529)
--- Dependencies: 243
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.users (user_id, name, email, password, phone, role, status, created_at) FROM stdin;
-1	John	john@gmail.com	$2b$10$KHmNK4nKkBAGsN12c6eg4uQ0tIWhmt6Moa3qjFZ4dzpUpHqyiUXo6	\N	Tourist	Active	2026-03-25 23:00:21.008087
-2	Thineth Geevinda	thineth@gmail.com	$2b$10$6wGOktkYz3dN1f.eJuhNzeUvkXnMZaI4Qetagw0tqcY285OQsCQRW	\N	Manager	Active	2026-04-21 18:11:33.845609
-3	John Doe	john@example.com	$2b$10$ctETkyL5de3ErjAuDXHE4OWXkBr3c2KpIxP4zeQDFJb0sKkDkUxU.	\N	Tourist	Active	2026-04-28 19:48:14.447078
-6	Danushka Madushan	Danushkamadushan128@gmail.com	$2b$10$7jqbMs.Z2nsXYPR8wIIX3.1hOuli8fCKMceGBJzIhgh4yZEIlpQS6	\N	Tourist	Active	2026-05-01 17:22:34.993315
-\.
-
-
---
--- TOC entry 4987 (class 0 OID 0)
--- Dependencies: 218
--- Name: booking_booking_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.booking_booking_id_seq', 1, false);
-
-
---
--- TOC entry 4988 (class 0 OID 0)
--- Dependencies: 220
--- Name: destination_destination_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.destination_destination_id_seq', 1, false);
-
-
---
--- TOC entry 4989 (class 0 OID 0)
--- Dependencies: 222
--- Name: driver_assignment_driver_assignment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.driver_assignment_driver_assignment_id_seq', 1, false);
-
-
---
--- TOC entry 4990 (class 0 OID 0)
--- Dependencies: 224
--- Name: feedback_feedback_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.feedback_feedback_id_seq', 1, false);
-
-
---
--- TOC entry 4991 (class 0 OID 0)
--- Dependencies: 226
--- Name: guide_assignment_guide_assignment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.guide_assignment_guide_assignment_id_seq', 1, false);
-
-
---
--- TOC entry 4992 (class 0 OID 0)
--- Dependencies: 228
--- Name: hotel_hotel_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.hotel_hotel_id_seq', 1, false);
-
-
---
--- TOC entry 4993 (class 0 OID 0)
--- Dependencies: 230
--- Name: hotel_reservation_reservation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.hotel_reservation_reservation_id_seq', 1, false);
-
-
---
--- TOC entry 4994 (class 0 OID 0)
--- Dependencies: 232
--- Name: inquiry_inquiry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.inquiry_inquiry_id_seq', 1, false);
-
-
---
--- TOC entry 4995 (class 0 OID 0)
--- Dependencies: 234
--- Name: itinerary_itinerary_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.itinerary_itinerary_id_seq', 1, false);
-
-
---
--- TOC entry 4996 (class 0 OID 0)
--- Dependencies: 236
--- Name: notification_notification_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.notification_notification_id_seq', 1, false);
-
-
---
--- TOC entry 4997 (class 0 OID 0)
--- Dependencies: 238
--- Name: payment_payment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.payment_payment_id_seq', 1, false);
-
-
---
--- TOC entry 4998 (class 0 OID 0)
--- Dependencies: 240
--- Name: room_type_room_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.room_type_room_type_id_seq', 1, false);
-
-
---
--- TOC entry 4999 (class 0 OID 0)
--- Dependencies: 242
--- Name: tour_package_package_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.tour_package_package_id_seq', 2, true);
-
-
---
--- TOC entry 5000 (class 0 OID 0)
--- Dependencies: 244
--- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.users_user_id_seq', 6, true);
-
-
---
--- TOC entry 4749 (class 2606 OID 16538)
+-- TOC entry 4751 (class 2606 OID 16538)
 -- Name: booking booking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -845,7 +581,7 @@ ALTER TABLE ONLY public.booking
 
 
 --
--- TOC entry 4753 (class 2606 OID 16540)
+-- TOC entry 4755 (class 2606 OID 16540)
 -- Name: destination destination_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -854,7 +590,7 @@ ALTER TABLE ONLY public.destination
 
 
 --
--- TOC entry 4755 (class 2606 OID 16542)
+-- TOC entry 4757 (class 2606 OID 16542)
 -- Name: driver_assignment driver_assignment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -863,7 +599,7 @@ ALTER TABLE ONLY public.driver_assignment
 
 
 --
--- TOC entry 4759 (class 2606 OID 16544)
+-- TOC entry 4761 (class 2606 OID 16544)
 -- Name: feedback feedback_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -872,7 +608,7 @@ ALTER TABLE ONLY public.feedback
 
 
 --
--- TOC entry 4764 (class 2606 OID 16546)
+-- TOC entry 4766 (class 2606 OID 16546)
 -- Name: guide_assignment guide_assignment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -881,7 +617,7 @@ ALTER TABLE ONLY public.guide_assignment
 
 
 --
--- TOC entry 4768 (class 2606 OID 16548)
+-- TOC entry 4770 (class 2606 OID 16548)
 -- Name: hotel hotel_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -890,7 +626,7 @@ ALTER TABLE ONLY public.hotel
 
 
 --
--- TOC entry 4770 (class 2606 OID 16550)
+-- TOC entry 4772 (class 2606 OID 16550)
 -- Name: hotel_reservation hotel_reservation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -899,7 +635,7 @@ ALTER TABLE ONLY public.hotel_reservation
 
 
 --
--- TOC entry 4773 (class 2606 OID 16552)
+-- TOC entry 4794 (class 2606 OID 16682)
 -- Name: inquiry inquiry_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -971,7 +707,7 @@ ALTER TABLE ONLY public.itinerary
 
 
 --
--- TOC entry 4757 (class 2606 OID 16568)
+-- TOC entry 4759 (class 2606 OID 16568)
 -- Name: driver_assignment unique_driver_booking; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -980,7 +716,7 @@ ALTER TABLE ONLY public.driver_assignment
 
 
 --
--- TOC entry 4762 (class 2606 OID 16570)
+-- TOC entry 4764 (class 2606 OID 16570)
 -- Name: feedback unique_feedback_per_user; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -989,7 +725,7 @@ ALTER TABLE ONLY public.feedback
 
 
 --
--- TOC entry 4766 (class 2606 OID 16572)
+-- TOC entry 4768 (class 2606 OID 16572)
 -- Name: guide_assignment unique_guide_booking; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1016,7 +752,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4750 (class 1259 OID 16577)
+-- TOC entry 4752 (class 1259 OID 16577)
 -- Name: idx_booking_package; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1024,7 +760,7 @@ CREATE INDEX idx_booking_package ON public.booking USING btree (package_id);
 
 
 --
--- TOC entry 4751 (class 1259 OID 16578)
+-- TOC entry 4753 (class 1259 OID 16578)
 -- Name: idx_booking_tourist; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1032,7 +768,7 @@ CREATE INDEX idx_booking_tourist ON public.booking USING btree (tourist_id);
 
 
 --
--- TOC entry 4760 (class 1259 OID 16579)
+-- TOC entry 4762 (class 1259 OID 16579)
 -- Name: idx_feedback_package; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1048,7 +784,7 @@ CREATE INDEX idx_payment_booking ON public.payment USING btree (booking_id);
 
 
 --
--- TOC entry 4771 (class 1259 OID 16581)
+-- TOC entry 4773 (class 1259 OID 16581)
 -- Name: idx_reservation_booking; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1056,7 +792,7 @@ CREATE INDEX idx_reservation_booking ON public.hotel_reservation USING btree (bo
 
 
 --
--- TOC entry 4795 (class 2606 OID 16582)
+-- TOC entry 4797 (class 2606 OID 16582)
 -- Name: driver_assignment fk_booking_driver; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1065,7 +801,7 @@ ALTER TABLE ONLY public.driver_assignment
 
 
 --
--- TOC entry 4799 (class 2606 OID 16587)
+-- TOC entry 4801 (class 2606 OID 16587)
 -- Name: guide_assignment fk_booking_guide; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1074,7 +810,7 @@ ALTER TABLE ONLY public.guide_assignment
 
 
 --
--- TOC entry 4806 (class 2606 OID 16592)
+-- TOC entry 4807 (class 2606 OID 16592)
 -- Name: payment fk_booking_payment; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1083,7 +819,7 @@ ALTER TABLE ONLY public.payment
 
 
 --
--- TOC entry 4801 (class 2606 OID 16597)
+-- TOC entry 4803 (class 2606 OID 16597)
 -- Name: hotel_reservation fk_booking_reservation; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1092,7 +828,7 @@ ALTER TABLE ONLY public.hotel_reservation
 
 
 --
--- TOC entry 4808 (class 2606 OID 16602)
+-- TOC entry 4809 (class 2606 OID 16602)
 -- Name: tour_package fk_destination; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1101,7 +837,7 @@ ALTER TABLE ONLY public.tour_package
 
 
 --
--- TOC entry 4796 (class 2606 OID 16607)
+-- TOC entry 4798 (class 2606 OID 16607)
 -- Name: driver_assignment fk_driver; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1110,7 +846,7 @@ ALTER TABLE ONLY public.driver_assignment
 
 
 --
--- TOC entry 4800 (class 2606 OID 16612)
+-- TOC entry 4802 (class 2606 OID 16612)
 -- Name: guide_assignment fk_guide; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1119,7 +855,7 @@ ALTER TABLE ONLY public.guide_assignment
 
 
 --
--- TOC entry 4807 (class 2606 OID 16617)
+-- TOC entry 4808 (class 2606 OID 16617)
 -- Name: room_type fk_hotel; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1128,7 +864,7 @@ ALTER TABLE ONLY public.room_type
 
 
 --
--- TOC entry 4793 (class 2606 OID 16622)
+-- TOC entry 4795 (class 2606 OID 16622)
 -- Name: booking fk_package_booking; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1137,7 +873,7 @@ ALTER TABLE ONLY public.booking
 
 
 --
--- TOC entry 4797 (class 2606 OID 16627)
+-- TOC entry 4799 (class 2606 OID 16627)
 -- Name: feedback fk_package_feedback; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1146,7 +882,7 @@ ALTER TABLE ONLY public.feedback
 
 
 --
--- TOC entry 4804 (class 2606 OID 16632)
+-- TOC entry 4805 (class 2606 OID 16632)
 -- Name: itinerary fk_package_itinerary; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1155,7 +891,7 @@ ALTER TABLE ONLY public.itinerary
 
 
 --
--- TOC entry 4802 (class 2606 OID 16637)
+-- TOC entry 4804 (class 2606 OID 16637)
 -- Name: hotel_reservation fk_room_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1164,7 +900,7 @@ ALTER TABLE ONLY public.hotel_reservation
 
 
 --
--- TOC entry 4794 (class 2606 OID 16642)
+-- TOC entry 4796 (class 2606 OID 16642)
 -- Name: booking fk_tourist; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1173,7 +909,7 @@ ALTER TABLE ONLY public.booking
 
 
 --
--- TOC entry 4798 (class 2606 OID 16647)
+-- TOC entry 4800 (class 2606 OID 16647)
 -- Name: feedback fk_tourist_feedback; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1182,16 +918,7 @@ ALTER TABLE ONLY public.feedback
 
 
 --
--- TOC entry 4803 (class 2606 OID 16652)
--- Name: inquiry fk_tourist_inquiry; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.inquiry
-    ADD CONSTRAINT fk_tourist_inquiry FOREIGN KEY (tourist_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
-
-
---
--- TOC entry 4805 (class 2606 OID 16657)
+-- TOC entry 4806 (class 2606 OID 16657)
 -- Name: notification fk_user_notification; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1199,11 +926,11 @@ ALTER TABLE ONLY public.notification
     ADD CONSTRAINT fk_user_notification FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
--- Completed on 2026-05-06 13:07:50
+-- Completed on 2026-05-24 23:35:08
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict RCdsKRVYvedmvKOaWOtrxSp8BWcwMmxAvZsf2gmGkqqXalKPLTrhJV2p0LY5DjI
+\unrestrict jdN0gVXGvBImK3UjNxLunt1kCGmytcaVSVl1XLJWJVLteB3Pn8wCwuCNVDaer3M
 
