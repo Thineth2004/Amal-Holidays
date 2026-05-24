@@ -14,7 +14,19 @@ export const getAllBookingsController = catchAsync(async (req: any, res: Respons
 });
 
 export const createBookingController = catchAsync(async (req: any, res: Response) => {
-    const { package_id, no_of_travelers, travel_date } = req.body;
+    const { 
+        package_id, 
+        no_of_travelers, 
+        travel_date,
+        hotel_id,
+        hotel_rooms,
+        hotel_cost,
+        driver_id,
+        driver_cost,
+        tour_guide_id,
+        tour_guide_cost,
+        total_price
+    } = req.body;
     const tourist_id = req.user.user_id;
 
     const booking = await createBooking({
@@ -22,6 +34,14 @@ export const createBookingController = catchAsync(async (req: any, res: Response
         package_id,
         no_of_travelers,
         travel_date,
+        hotel_id,
+        hotel_rooms,
+        hotel_cost,
+        driver_id,
+        driver_cost,
+        tour_guide_id,
+        tour_guide_cost,
+        total_price
     });
 
     if (!booking) {
