@@ -19,6 +19,6 @@ router.post("/", authenticate, authorize("Manager"), createTourGuideController);
 router.put("/:id", authenticate, authorize("Manager"), updateTourGuideController);
 router.delete("/:id", authenticate, authorize("Manager"), deleteTourGuideController);
 
-router.get("/:id/bookings", authenticate, authorize("Manager"), getTourGuideBookingsController);
+router.get("/:id/bookings", authenticate, authorize("Manager", "Guide"), getTourGuideBookingsController);
 
 export default router;
