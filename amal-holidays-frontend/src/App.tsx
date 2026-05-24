@@ -10,6 +10,7 @@ import Checkout from './pages/Checkout'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import PasswordReset from './pages/ResetPassword'
+import InquiryWidget from './components/InquiryWidget'
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
         <Footer />
+        <InquiryWidget />
       </BrowserRouter>
     </div>
   )
