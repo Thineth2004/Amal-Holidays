@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { backend_url } from '../config/config';
 
 interface Destination {
-  id: number;
+  destination_id: number;
   name: string;
   location: string;
   description: string;
@@ -16,6 +16,7 @@ interface Destination {
 const Destinations: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingDestination, setEditingDestination] = useState<Destination | null>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
 
   const fetchDestinations = async () => {
@@ -23,11 +24,37 @@ const Destinations: React.FC = () => {
       const response = await api.get('/api/destinations');
       const data = response.data.map((dest: Destination) => ({
         ...dest,
-        imageUrl: `${backend_url}/api/images/${dest.image_uuid}`
+        imageUrl: dest.image_uuid ? `${backend_url}/api/images/${dest.image_uuid}` : undefined,
       }));
       setDestinations(data);
     } catch (error: unknown) {
       toast.error( (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to fetch destinations');
+    }
+  };
+
+  const handleSaveSuccess = (savedDestination: Destination) => {
+    const destinationWithImage = {
+      ...savedDestination,
+      imageUrl: savedDestination.image_uuid ? `${backend_url}/api/images/${savedDestination.image_uuid}` : undefined,
+    };
+
+    if (editingDestination) {
+      setDestinations(destinations.map((dest) => dest.destination_id === savedDestination.destination_id ? destinationWithImage : dest));
+    } else {
+      setDestinations([...destinations, destinationWithImage]);
+    }
+
+    setEditingDestination(null);
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteDestination = async (destinationId: number) => {
+    try {
+      await api.delete(`/api/destinations/${destinationId}`);
+      setDestinations(destinations.filter((dest) => dest.destination_id !== destinationId));
+      toast.success('Destination deleted successfully.');
+    } catch (error: unknown) {
+      toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to delete destination');
     }
   };
 
@@ -50,8 +77,12 @@ const Destinations: React.FC = () => {
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
       <AddDestinationModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSuccess={(newDest: Destination) => handleAddSuccess(newDest)} 
+        editData={editingDestination ?? undefined}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingDestination(null);
+        }} 
+        onSuccess={(newDest: Destination) => handleSaveSuccess(newDest)} 
       />
       <div className="px-8 pb-12 pt-4">
         {/* Integrated Control Bar - Improved Visibility */}
@@ -86,43 +117,57 @@ const Destinations: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {destinations.map((dest) => (
-                <tr key={dest.id} className="group hover:bg-slate-50/80 transition-colors">
-                  <td className="px-8 py-6">
-                    <div className="flex items-start gap-6">
-                      {/* Scaled-up Image for Observation */}
-                      <div className="w-48 h-32 rounded-2xl overflow-hidden flex-shrink-0 bg-slate-200 border border-slate-200 shadow-inner">
-                        {dest.imageUrl ? (
-                          <img alt={dest.name} className="w-full h-full object-cover transition-transform duration-500" src={dest.imageUrl} />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[#717786]/30">
-                            <span className="material-symbols-outlined text-3xl">landscape</span>
-                          </div>
-                        )}
+              {destinations
+                .filter((dest) => dest.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                .map((dest) => (
+                  <tr key={dest.destination_id} className="group hover:bg-slate-50/80 transition-colors">
+                    <td className="px-8 py-6">
+                      <div className="flex items-start gap-6">
+                        {/* Scaled-up Image for Observation */}
+                        <div className="w-48 h-32 rounded-2xl overflow-hidden flex-shrink-0 bg-slate-200 border border-slate-200 shadow-inner">
+                          {dest.imageUrl ? (
+                            <img alt={dest.name} className="w-full h-full object-cover transition-transform duration-500" src={dest.imageUrl} />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[#717786]/30">
+                              <span className="material-symbols-outlined text-3xl">landscape</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="pt-1">
+                          <div className="font-extrabold text-[#1b1c1c] text-lg leading-tight">{dest.name}</div>
+                          <div className="text-sm font-bold text-[#0059bb] mb-2">{dest.location}</div>
+                          <p className="text-sm text-[#717786] max-w-md line-clamp-2 leading-relaxed">
+                            {dest.description}
+                          </p>
+                        </div>
                       </div>
-                      <div className="pt-1">
-                        <div className="font-extrabold text-[#1b1c1c] text-lg leading-tight">{dest.name}</div>
-                        <div className="text-sm font-bold text-[#0059bb] mb-2">{dest.location}</div>
-                        <p className="text-sm text-[#717786] max-w-md line-clamp-2 leading-relaxed">
-                          {dest.description}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end gap-3">
-                      <button
-                        title="Delete Destination"
-                        className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 rounded-xl transition-all font-bold text-xs"
-                      >
-                        <span className="material-symbols-outlined text-[18px]">delete</span>
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    <td className="px-8 py-6 text-right">
+                      <div className="flex items-center justify-end gap-3">
+                        <button
+                          title="Edit Destination"
+                          onClick={() => {
+                            setEditingDestination(dest);
+                            setIsModalOpen(true);
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 text-[#0059bb] bg-white border border-slate-200 hover:bg-blue-50 hover:border-blue-200 rounded-xl transition-all font-bold text-xs"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">edit</span>
+                          Edit
+                        </button>
+                        <button
+                          title="Delete Destination"
+                          onClick={() => handleDeleteDestination(dest.destination_id)}
+                          className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 rounded-xl transition-all font-bold text-xs"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">delete</span>
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 
