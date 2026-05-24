@@ -18,5 +18,5 @@ export interface AuthContextType {
 export interface LoginResponse {
     message: string;
     token: string;
-    safeUser: User;
+    user: User;
 }
