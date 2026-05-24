@@ -38,7 +38,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-grow space-y-1 pr-2">
+      <nav className="flex-grow space-y-1 pr-2 overflow-y-auto custom-scrollbar">
         {navItems.map((item) => (
           <NavLink
             key={item.label}
