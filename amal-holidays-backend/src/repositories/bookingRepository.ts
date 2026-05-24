@@ -73,3 +73,45 @@ export const createBookingRepo = async (data: any) => {
         client.release();
     }
 };
+
+export const deleteBookingRepo = async (bookingId: number) => {
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        const bookingResult = await client.query(
+            `SELECT booking_id, no_of_travelers, package_id
+             FROM booking
+             WHERE booking_id = $1
+             FOR UPDATE`,
+            [bookingId]
+        );
+
+        const booking = bookingResult.rows[0];
+
+        if (!booking) {
+            throw new Error('Booking not found');
+        }
+
+        // Delete booking
+        await client.query(`DELETE FROM booking WHERE booking_id = $1`, [bookingId]);
+
+        // Restore available slots to the package
+        await client.query(
+            `UPDATE tour_package
+             SET available_slots = available_slots + $1
+             WHERE package_id = $2`,
+            [booking.no_of_travelers, booking.package_id]
+        );
+
+        await client.query('COMMIT');
+
+        return booking;
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
+    }
+};
