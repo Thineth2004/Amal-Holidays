@@ -36,12 +36,19 @@ export const updateDestinationRepo = async (
 };
 
 export const deleteDestinationRepo = async (id: number) => {
-    const result = await pool.query(
-        `DELETE FROM destination WHERE destination_id = $1 RETURNING *`,
-        [id]
-    );
-    if (!result.rows[0]) {
-        throw new Error("Destination not found.");
+    try {
+        const result = await pool.query(
+            `DELETE FROM destination WHERE destination_id = $1 RETURNING *`,
+            [id]
+        );
+        if (!result.rows[0]) {
+            throw new Error("Destination not found.");
+        }
+        return result.rows[0];
+    } catch (error: any) {
+        if (error.code === '23503' || /foreign key/i.test(error.message)) {
+            throw new Error('Please delete related Bookings');
+        }
+        throw error;
     }
-    return result.rows[0];
 };
