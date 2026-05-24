@@ -51,7 +51,7 @@ const StaffLogin: React.FC = () => {
         {/* Header Text - Scaled for Desktop */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-extrabold text-white mb-2 tracking-tight">Management Portal</h1>
-          <p className="text-white/80 text-sm">Authorized staff access for <span className='font-nav-md'>Amal Holidays</span></p>
+          <p className="text-white/80 text-sm">Staff & Team Portal for <span className='font-nav-md'>Amal Holidays</span></p>
         </div>
     
         {/* Glassmorphic Card - Adjusted Padding */}
