@@ -182,8 +182,19 @@ const CustomTooltip: React.FC<{
   );
 };
 
+import { useAuth } from '../contexts/AuthContext';
+import StaffDashboard from './StaffDashboard';
+
 // ─── Main Dashboard ────────────────────────────────────────────
 const Dashboard: React.FC = () => {
+  const { user } = useAuth();
+  if (user?.role === 'Guide' || user?.role === 'Driver') {
+    return <StaffDashboard />;
+  }
+  return <ManagerDashboard />;
+};
+
+const ManagerDashboard: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [users, setUsers] = useState<User[]>([]);
