@@ -24,3 +24,53 @@
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
 }
+
+/* ─── Print Styles for Dashboard PDF Export ─── */
+@media print {
+  /* Hide sidebar and non-essential controls */
+  aside,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Remove sidebar offset */
+  main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* White background for printing */
+  body,
+  #root,
+  #root > div {
+    background: white !important;
+  }
+
+  /* Ensure charts and cards print well */
+  #dashboard-print-area {
+    width: 100% !important;
+  }
+
+  #dashboard-print-area > div {
+    padding: 16px !important;
+  }
+
+  /* Make cards break-inside-avoid */
+  #dashboard-print-area .grid > div {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure chart SVGs are visible */
+  .recharts-wrapper {
+    overflow: visible !important;
+  }
+
+  /* Reduce shadow for print */
+  .shadow-sm,
+  .shadow-lg,
+  .shadow-xl {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
