@@ -332,7 +332,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"package_id\": 1,\n    \"no_of_travelers\": 2,\n    \"travel_date\": \"2026-06-02\"\n}",
+                            "raw": "{\n    \"package_id\": 1,\n    \"no_of_travelers\": 2,\n    \"travel_date\": \"2026-06-02\",\n    \"hotel_id\": 1,\n    \"hotel_rooms\": 1,\n    \"hotel_cost\": 10000,\n    \"driver_id\": 2,\n    \"driver_cost\": 5000,\n    \"tour_guide_id\": 3,\n    \"tour_guide_cost\": 6000,\n    \"total_price\": 111000\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -770,6 +770,186 @@
                         }
                     },
                     "response": []
+                }
+            ]
+        },
+        {
+            "name": "Hotels",
+            "item": [
+                {
+                    "name": "Get All Hotels",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/hotels",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "hotels"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Hotel (Manager)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Grand Hotel\",\n    \"location\": \"Nuwara Eliya\",\n    \"contact_no\": \"0771234567\",\n    \"rating\": 5,\n    \"description\": \"Luxury hotel\",\n    \"price_per_night\": 25000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/hotels",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "hotels"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Drivers",
+            "item": [
+                {
+                    "name": "Get All Drivers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/drivers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "drivers"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Driver (Manager)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Kamal\",\n    \"email\": \"kamal@driver.com\",\n    \"password\": \"password123\",\n    \"phone\": \"0777654321\",\n    \"price_per_day\": 5000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/drivers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "drivers"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Tour Guides",
+            "item": [
+                {
+                    "name": "Get All Tour Guides",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/tour-guides",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "tour-guides"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Tour Guide (Manager)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Nimal\",\n    \"email\": \"nimal@guide.com\",\n    \"password\": \"password123\",\n    \"phone\": \"0711234567\",\n    \"price_per_day\": 8000\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/tour-guides",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "tour-guides"
+                            ]
+                        }
+                    }
                 }
             ]
         }
