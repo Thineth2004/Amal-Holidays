@@ -515,7 +515,7 @@ const Dashboard: React.FC = () => {
                 <span className="material-symbols-outlined text-[16px]">expand_more</span>
               </button>
               {exportOpen && (
-                <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-slate-200 rounded-md shadow-lg z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <button
                     onClick={exportCSV}
                     className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-[#1b1c1c] hover:bg-slate-50 transition-colors"
