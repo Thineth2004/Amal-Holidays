@@ -64,14 +64,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = useCallback(async (email: string, password: string) => {
       try {
-          const response = await api.post<LoginResponse>("/auth/login", { email, password });
-          const { token: newToken, safeUser } = response.data;
+            const response = await api.post<LoginResponse>("/auth/login", { email, password });
+              const { token: newToken, user } = response.data;
 
-          localStorage.setItem("token", newToken);
-          localStorage.setItem("user", JSON.stringify(safeUser));
+              localStorage.setItem("token", newToken);
+              localStorage.setItem("user", JSON.stringify(user));
 
-          setToken(newToken);
-          setUser(safeUser);
+              setToken(newToken);
+              setUser(user);
       } catch (error: unknown) {
           const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Login failed. Please try again.";
           throw new Error(message, { cause: error });
