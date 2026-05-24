@@ -21,6 +21,14 @@ const getErrorMessage = (error: unknown): string => {
 const Checkout: React.FC = () => {
   interface CheckoutLocationState {
     packageId: number | string;
+    hotel_id?: number;
+    hotel_rooms?: number;
+    hotel_cost?: number;
+    driver_id?: number;
+    driver_cost?: number;
+    tour_guide_id?: number;
+    tour_guide_cost?: number;
+    total_price?: number;
   }
 
   const location = useLocation();
@@ -69,6 +77,14 @@ const Checkout: React.FC = () => {
           package_id: Number(pkg.package_id),
           no_of_travelers: 1,
           travel_date: pkg.start_date,
+          hotel_id: state?.hotel_id,
+          hotel_rooms: state?.hotel_rooms,
+          hotel_cost: state?.hotel_cost,
+          driver_id: state?.driver_id,
+          driver_cost: state?.driver_cost,
+          tour_guide_id: state?.tour_guide_id,
+          tour_guide_cost: state?.tour_guide_cost,
+          total_price: state?.total_price
         });
 
         const booking = bookingResp.data;
@@ -96,7 +112,7 @@ const Checkout: React.FC = () => {
 
     // start the flow automatically when page loads
     doCheckout();
-  }, [pkg, isAuthenticated, navigate]);
+  }, [pkg, isAuthenticated, navigate, state]);
 
   return (
     <main className="min-h-screen flex items-center justify-center py-28 px-6">
@@ -110,7 +126,10 @@ const Checkout: React.FC = () => {
               <img src={`${backend_url}/images/${pkg.image_uuids[0]}`} alt="pkg" className="w-28 h-20 object-cover rounded-md" />
               <div>
                 <h2 className="font-bold text-lg">{pkg.title}</h2>
-                <p className="text-sm text-slate-600">Rs. {Number(pkg.price).toLocaleString()} — 1 traveller</p>
+                <p className="text-sm text-slate-600">Rs. {Number(state?.total_price || pkg.price).toLocaleString()} — 1 traveller</p>
+                {(state?.hotel_id || state?.driver_id || state?.tour_guide_id) && (
+                  <p className="text-xs text-[#0059bb] font-semibold mt-1">Includes optional services</p>
+                )}
               </div>
             </div>
           )}
