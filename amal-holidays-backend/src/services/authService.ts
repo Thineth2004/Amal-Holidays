@@ -60,7 +60,7 @@ export const staffManagerLoginUser = async (email: string, password: string) => 
         throw new Error("Invalid email or password");
     }
 
-    if (user.role !== "Staff" && user.role !== "Manager") {
+    if (user.role !== "Staff" && user.role !== "Manager" && user.role !== "Guide" && user.role !== "Driver") {
         throw new Error("Invalid email or password");
     }
 
