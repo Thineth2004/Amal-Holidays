@@ -100,25 +100,28 @@ const AddDestinationModal: React.FC<AddDestinationModalProps> = ({ isOpen, onClo
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
-            <div className="relative">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-600 ml-1">Destination Name</label>
               <input 
                 value={formData.name}
                 className="w-full bg-[#f4f6fa] border-none rounded-2xl p-4 pl-5 text-sm focus:ring-2 focus:ring-[#0059bb] outline-none transition-all" 
-                placeholder="Destination Name" 
+                placeholder="e.g. Ella" 
                 required 
                 onChange={(e) => setFormData({...formData, name: e.target.value})} 
               />
             </div>
-            <div className="relative">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-600 ml-1">Location</label>
               <input 
                 value={formData.location}
                 className="w-full bg-[#f4f6fa] border-none rounded-2xl p-4 pl-5 text-sm focus:ring-2 focus:ring-[#0059bb] outline-none transition-all" 
-                placeholder="Location (e.g., Badulla District)" 
+                placeholder="e.g. Badulla District" 
                 required 
                 onChange={(e) => setFormData({...formData, location: e.target.value})} 
               />
             </div>
-            <div className="relative">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-600 ml-1">Description</label>
               <textarea 
                 value={formData.description}
                 className="w-full bg-[#f4f6fa] border-none rounded-2xl p-4 pl-5 text-sm focus:ring-2 focus:ring-[#0059bb] outline-none transition-all h-24 resize-none" 
