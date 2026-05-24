@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AddDestinationModal from '../components/AddDestinationModal';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 import { backend_url } from '../config/config';
 import Bookings from './Bookings';
 
@@ -21,6 +22,7 @@ const Destinations: React.FC = () => {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [showBookingsModal, setShowBookingsModal] = useState(false);
   const [selectedDestinationId, setSelectedDestinationId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   const fetchDestinations = async () => {
     try {
@@ -61,13 +63,16 @@ const Destinations: React.FC = () => {
       : message;
   };
 
-  const handleDeleteDestination = async (destinationId: number) => {
+  const executeDeleteDestination = async () => {
+    if (confirmDeleteId === null) return;
     try {
-      await api.delete(`/api/destinations/${destinationId}`);
-      setDestinations(destinations.filter((dest) => dest.destination_id !== destinationId));
+      await api.delete(`/api/destinations/${confirmDeleteId}`);
+      setDestinations(destinations.filter((dest) => dest.destination_id !== confirmDeleteId));
       toast.success('Destination deleted successfully.');
     } catch (error: unknown) {
       toast.error(formatDeleteError(error, 'Failed to delete destination'));
+    } finally {
+      setConfirmDeleteId(null);
     }
   };
 
@@ -86,6 +91,13 @@ const Destinations: React.FC = () => {
 
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased">
+      <ConfirmDeleteModal
+        isOpen={confirmDeleteId !== null}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={executeDeleteDestination}
+        title="Delete Destination"
+        message={`Are you sure you want to delete destination #${confirmDeleteId}? This action cannot be undone.`}
+      />
       {showBookingsModal && selectedDestinationId && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
@@ -205,7 +217,7 @@ const Destinations: React.FC = () => {
                         </button>
                         <button
                           title="Delete Destination"
-                          onClick={() => handleDeleteDestination(dest.destination_id)}
+                          onClick={() => setConfirmDeleteId(dest.destination_id)}
                           className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 rounded-xl transition-all font-bold text-xs"
                         >
                           <span className="material-symbols-outlined text-[18px]">delete</span>
