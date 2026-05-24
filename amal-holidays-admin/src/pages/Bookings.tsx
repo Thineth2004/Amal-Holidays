@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axiosInstance';
 import toast from 'react-hot-toast';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 
 interface Booking {
   booking_id: number;
@@ -29,6 +30,7 @@ const Bookings: React.FC<BookingsProps> = ({ filterType, filterId, onClose }) =>
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [breakdownBooking, setBreakdownBooking] = useState<Booking | null>(null);
 
   useEffect(() => {
@@ -62,20 +64,19 @@ const Bookings: React.FC<BookingsProps> = ({ filterType, filterId, onClose }) =>
     fetchBookings();
   }, [filterType, filterId]);
 
-  const handleDeleteBooking = async (bookingId: number) => {
-    if (!window.confirm('Are you sure you want to delete this booking?')) {
-      return;
-    }
+  const executeDeleteBooking = async () => {
+    if (confirmDeleteId === null) return;
 
     try {
-      setDeletingId(bookingId);
-      await api.delete(`/api/bookings/${bookingId}`);
-      setBookings(bookings.filter((booking) => booking.booking_id !== bookingId));
+      setDeletingId(confirmDeleteId);
+      await api.delete(`/api/bookings/${confirmDeleteId}`);
+      setBookings(bookings.filter((booking) => booking.booking_id !== confirmDeleteId));
       toast.success('Booking deleted successfully. You can now delete the related package/destination.');
     } catch (error: unknown) {
       toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to delete booking');
     } finally {
       setDeletingId(null);
+      setConfirmDeleteId(null);
     }
   };
 
@@ -97,6 +98,13 @@ const Bookings: React.FC<BookingsProps> = ({ filterType, filterId, onClose }) =>
 
   return (
     <div className="flex-1 flex flex-col min-w-0 bg-transparent font-['Plus_Jakarta_Sans'] antialiased relative">
+      <ConfirmDeleteModal
+        isOpen={confirmDeleteId !== null}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={executeDeleteBooking}
+        title="Delete Booking"
+        message={`Are you sure you want to delete booking #${confirmDeleteId}? This action cannot be undone.`}
+      />
       
       {/* Price Breakdown Modal */}
       {breakdownBooking && (
@@ -280,7 +288,7 @@ const Bookings: React.FC<BookingsProps> = ({ filterType, filterId, onClose }) =>
                     </td>
                     <td className="px-8 py-6 text-right">
                       <button
-                        onClick={() => handleDeleteBooking(booking.booking_id)}
+                        onClick={() => setConfirmDeleteId(booking.booking_id)}
                         disabled={deletingId === booking.booking_id}
                         className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 rounded-xl transition-all font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
                       >
