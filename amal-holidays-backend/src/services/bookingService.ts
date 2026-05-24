@@ -1,4 +1,4 @@
-import { createBookingRepo } from "../repositories/bookingRepository";
+import { createBookingRepo, deleteBookingRepo } from "../repositories/bookingRepository";
 import { getPackageByIdRepo } from "../repositories/tourRepository";
 
 export const createBooking = async (data: any) => {
@@ -29,3 +29,7 @@ export const createBooking = async (data: any) => {
 
     return await createBookingRepo(data);
 }
+
+export const deleteBooking = async (bookingId: number) => {
+    return await deleteBookingRepo(bookingId);
+};
