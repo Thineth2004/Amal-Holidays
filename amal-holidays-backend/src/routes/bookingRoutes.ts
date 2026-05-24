@@ -1,5 +1,5 @@
 import express from "express";
-import { createBookingController, getAllBookingsController } from "../controllers/bookingController";
+import { createBookingController, getAllBookingsController, deleteBookingController } from "../controllers/bookingController";
 import { authenticate } from "../middlewares/authMiddleware";
 import { authorize } from "../middlewares/roleMiddleware";
 import { validateBookingInput } from "../middlewares/validateMiddleware";
@@ -21,6 +21,14 @@ router.post(
   authorize("Tourist"),
   validateBookingInput,
   createBookingController
+);
+
+// Manager/Staff only - Delete a booking (restore package slots)
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("Manager", "Staff"),
+  deleteBookingController
 );
 
 export default router;
