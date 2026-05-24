@@ -25,7 +25,6 @@ const Sidebar: React.FC = () => {
     { label: 'Drivers', icon: 'directions_car', path: '/drivers' },
     { label: 'Tour Guides', icon: 'tour', path: '/tour-guides' },
     { label: 'Users', icon: 'group', path: '/users' },
-    { label: 'Management', icon: 'engineering', path: '/management' },
     { label: 'Inquiries', icon: 'contact_support', path: '/inquiries' },
   ];
 
