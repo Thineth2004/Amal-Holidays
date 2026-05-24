@@ -6,7 +6,7 @@ import { backend_url } from '../config/config';
 import { useAuth } from '../hooks/useAuth';
 
 const INCLUSIONS = [
-  { icon: 'flight_takeoff', title: 'Premium Flights', desc: 'Round-trip flights included' },
+  { icon: 'directions_bus', title: 'Comfortable Transport', desc: 'A/C vehicles for all travel' },
   { icon: 'hotel', title: 'Luxury Stay', desc: 'Handpicked accommodation' },
   { icon: 'directions_car', title: 'Private Transfers', desc: 'Airport and local luxury transit' },
   { icon: 'sailing', title: 'Curated Tours', desc: 'Guided experiences & activities' },
@@ -240,6 +240,55 @@ const PackageDetails: React.FC = () => {
                   <p className="text-sm text-[#414754]">{step.date}</p>
                 </div>
               ))}
+            </div>
+          </section>
+
+          <hr className="border-[#c1c6d7]/30" />
+
+          {/* Daily Itinerary */}
+          <section>
+            <h2 className="text-2xl font-bold mb-6">Daily Itinerary</h2>
+            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200">
+                    <th className="px-6 py-4 font-bold text-[#1b1c1c] text-sm w-24">Day</th>
+                    <th className="px-6 py-4 font-bold text-[#1b1c1c] text-sm">Activity</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#0059bb] whitespace-nowrap">Day 1</td>
+                    <td className="px-6 py-4 text-[#414754] text-sm leading-relaxed">
+                      Arrival & Check-in. Welcome dinner and briefing about the upcoming adventure.
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#0059bb] whitespace-nowrap">Day 2</td>
+                    <td className="px-6 py-4 text-[#414754] text-sm leading-relaxed">
+                      Morning sightseeing tour. Afternoon free for leisure or optional activities.
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#0059bb] whitespace-nowrap">Day 3</td>
+                    <td className="px-6 py-4 text-[#414754] text-sm leading-relaxed">
+                      Full day guided excursion exploring local heritage and scenic landscapes.
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#0059bb] whitespace-nowrap">Day 4</td>
+                    <td className="px-6 py-4 text-[#414754] text-sm leading-relaxed">
+                      Cultural immersion. Experience local traditions, crafts, and culinary delights.
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#0059bb] whitespace-nowrap">Day 5</td>
+                    <td className="px-6 py-4 text-[#414754] text-sm leading-relaxed">
+                      Departure. Breakfast at the hotel followed by transfer to your next destination.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
         </div>
