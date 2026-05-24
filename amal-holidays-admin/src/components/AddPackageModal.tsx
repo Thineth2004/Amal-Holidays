@@ -169,20 +169,22 @@ const AddPackageModal: React.FC<AddPackageModalProps> = ({ isOpen, onClose, onSu
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 flex flex-col gap-1">
+              <label className="block text-xs font-bold text-[#717786] mb-1 ml-2">Package Title</label>
               <input 
                 className="w-full bg-[#f4f6fa] border-none rounded-2xl p-4 pl-5 text-sm focus:ring-2 focus:ring-[#0059bb] outline-none transition-all" 
-                placeholder="Package Title" 
+                placeholder="e.g. 3 Days in Nuwara Eliya" 
                 required 
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})} 
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 flex flex-col gap-1">
+              <label className="block text-xs font-bold text-[#717786] mb-1 ml-2">Description</label>
               <textarea 
                 className="w-full bg-[#f4f6fa] border-none rounded-2xl p-4 pl-5 text-sm focus:ring-2 focus:ring-[#0059bb] outline-none transition-all h-24 resize-none" 
-                placeholder="Package description..." 
+                placeholder="Enter detailed package description..." 
                 required 
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})} 
