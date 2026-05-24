@@ -11,6 +11,7 @@ import imageRoutes from "./routes/imageRoutes";
 import hotelRoutes from "./routes/hotelRoutes";
 import driverRoutes from "./routes/driverRoutes";
 import tourGuideRoutes from "./routes/tourGuideRoutes";
+import inquiryRoutes from "./routes/inquiryRoutes";
 import fs from "fs";
 import path from "path";
 
@@ -60,5 +61,7 @@ app.use("/api/hotels", hotelRoutes);
 app.use("/api/drivers", driverRoutes);
 
 app.use("/api/tour-guides", tourGuideRoutes);
+
+app.use("/api/inquiries", inquiryRoutes);
 
 export default app;
