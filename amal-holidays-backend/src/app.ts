@@ -8,6 +8,9 @@ import bookingRoutes from "./routes/bookingRoutes";
 import destinationRoutes from "./routes/destinationRoutes";
 import assignmentRoutes from "./routes/assignmentRoutes";
 import imageRoutes from "./routes/imageRoutes";
+import hotelRoutes from "./routes/hotelRoutes";
+import driverRoutes from "./routes/driverRoutes";
+import tourGuideRoutes from "./routes/tourGuideRoutes";
 import fs from "fs";
 import path from "path";
 
@@ -51,5 +54,11 @@ app.use("/api/destinations", destinationRoutes);
 app.use("/api/assignments", assignmentRoutes);
 
 app.use("/api/images", imageRoutes);
+
+app.use("/api/hotels", hotelRoutes);
+
+app.use("/api/drivers", driverRoutes);
+
+app.use("/api/tour-guides", tourGuideRoutes);
 
 export default app;
