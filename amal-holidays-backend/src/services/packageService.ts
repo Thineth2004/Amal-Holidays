@@ -4,6 +4,7 @@ import {
     getAvailablePackagesRepo,
     getPackageByIdRepo,
     updatePackageRepo,
+    deletePackageRepo,
 } from "../repositories/tourRepository";
 
 export const createPackage = async (data: any) => {
@@ -24,4 +25,8 @@ export const getPackageById = async (id: number) => {
 
 export const updatePackage = async (id: number, data: any) => {
     return await updatePackageRepo(id, data);
+};
+
+export const deletePackage = async (id: number) => {
+    return await deletePackageRepo(id);
 };
