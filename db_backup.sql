@@ -928,9 +928,12 @@ ALTER TABLE ONLY public.notification
 
 -- Completed on 2026-05-24 23:35:08
 
+-- Insert default admin
+INSERT INTO public.users (name, email, password, phone, role, status) 
+VALUES ('Admin', 'admin@amal-holidays.com', '$2b$10$XHLsBGg7iHcxnw6nYekHYO6Em2/tGRMdyijDfu6wOWu3x4zEZ1R2m', '0711753053', 'Manager', 'Active');
+
 --
 -- PostgreSQL database dump complete
 --
 
 \unrestrict jdN0gVXGvBImK3UjNxLunt1kCGmytcaVSVl1XLJWJVLteB3Pn8wCwuCNVDaer3M
-
