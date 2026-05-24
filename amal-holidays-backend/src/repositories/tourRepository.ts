@@ -92,3 +92,13 @@ export const updatePackageRepo = async (id: number, data: any) => {
     return result.rows[0];
 };
 
+export const deletePackageRepo = async (id: number) => {
+    const result = await pool.query(
+        `DELETE FROM tour_package WHERE package_id = $1 RETURNING *`,
+        [id]
+    );
+    if (!result.rows[0]) {
+        throw new Error("Package not found.");
+    }
+    return result.rows[0];
+};
