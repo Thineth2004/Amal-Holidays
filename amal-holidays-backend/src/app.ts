@@ -22,6 +22,20 @@ if (!fs.existsSync(uploadDir)) {
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`\n[REQUEST] ${req.method} ${req.originalUrl}`);
+  if (Object.keys(req.params).length) {
+    console.log("  params:", JSON.stringify(req.params, null, 2));
+  }
+  if (Object.keys(req.query).length) {
+    console.log("  query:", JSON.stringify(req.query, null, 2));
+  }
+  if (req.body && Object.keys(req.body).length) {
+    console.log("  body:", JSON.stringify(req.body, null, 2));
+  }
+  next();
+});
+
 app.use("/api/test", testRoutes);
 
 app.use("/api/auth", authRoutes);
