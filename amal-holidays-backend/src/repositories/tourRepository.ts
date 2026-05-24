@@ -93,12 +93,19 @@ export const updatePackageRepo = async (id: number, data: any) => {
 };
 
 export const deletePackageRepo = async (id: number) => {
-    const result = await pool.query(
-        `DELETE FROM tour_package WHERE package_id = $1 RETURNING *`,
-        [id]
-    );
-    if (!result.rows[0]) {
-        throw new Error("Package not found.");
+    try {
+        const result = await pool.query(
+            `DELETE FROM tour_package WHERE package_id = $1 RETURNING *`,
+            [id]
+        );
+        if (!result.rows[0]) {
+            throw new Error("Package not found.");
+        }
+        return result.rows[0];
+    } catch (error: any) {
+        if (error.code === '23503' || /foreign key/i.test(error.message)) {
+            throw new Error('Please delete related Bookings');
+        }
+        throw error;
     }
-    return result.rows[0];
 };
