@@ -5,6 +5,7 @@ import {
     getAvailablePackagesController,
     getPackageController,
     updatePackageController,
+    deletePackageController,
 } from "../controllers/packageController";
 
 import { authenticate } from "../middlewares/authMiddleware";
@@ -46,6 +47,14 @@ router.put(
     authenticate,
     authorize("Manager"),
     updatePackageController
+);
+
+// Manager only
+router.delete(
+    "/:id",
+    authenticate,
+    authorize("Manager"),
+    deletePackageController
 );
 
 export default router;
