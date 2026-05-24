@@ -13,16 +13,30 @@ interface Booking {
   total_price: number;
 }
 
-const Bookings: React.FC = () => {
+interface BookingsProps {
+  filterType?: 'package' | 'destination';
+  filterId?: number;
+  onClose?: () => void;
+}
+
+const Bookings: React.FC<BookingsProps> = ({ filterType, filterId, onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/api/bookings');
+        let url = '/api/bookings';
+        
+        // If filtering by package or destination, add query parameter
+        if (filterType && filterId) {
+          url += `?${filterType}Id=${filterId}`;
+        }
+        
+        const response = await api.get(url);
         setBookings(Array.isArray(response.data) ? response.data : response.data.data);
       } catch (error: unknown) {
         toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to fetch bookings');
@@ -32,7 +46,24 @@ const Bookings: React.FC = () => {
     };
 
     fetchBookings();
-  }, []);
+  }, [filterType, filterId]);
+
+  const handleDeleteBooking = async (bookingId: number) => {
+    if (!window.confirm('Are you sure you want to delete this booking?')) {
+      return;
+    }
+
+    try {
+      setDeletingId(bookingId);
+      await api.delete(`/api/bookings/${bookingId}`);
+      setBookings(bookings.filter((booking) => booking.booking_id !== bookingId));
+      toast.success('Booking deleted successfully. You can now delete the related package/destination.');
+    } catch (error: unknown) {
+      toast.error((error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to delete booking');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -52,18 +83,35 @@ const Bookings: React.FC = () => {
       <div className="px-8 pb-12 pt-4">
         {/* Control Bar */}
         <div className="bg-white/60 backdrop-blur-md border border-slate-200 rounded-2xl p-4 mb-8 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-sm">
-          <div className="relative w-full lg:w-96">
-            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#717786] text-[20px]">search</span>
-            <input
-              className="w-full pl-12 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-4 focus:ring-[#0059bb]/10 focus:border-[#0059bb] outline-none transition-all placeholder:text-slate-400"
-              placeholder="Search by booking ID or tourist..."
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+          <div className="flex-1 flex flex-col lg:flex-row items-center gap-4 w-full">
+            <div className="relative w-full lg:w-96">
+              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#717786] text-[20px]">search</span>
+              <input
+                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-4 focus:ring-[#0059bb]/10 focus:border-[#0059bb] outline-none transition-all placeholder:text-slate-400"
+                placeholder="Search by booking ID or tourist..."
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            {filterType && filterId && (
+              <div className="px-4 py-2 bg-blue-100 border border-blue-300 rounded-lg text-sm font-semibold text-blue-800">
+                Filtering by {filterType === 'package' ? 'Package' : 'Destination'} ID: {filterId}
+              </div>
+            )}
           </div>
-          <div className="text-xs font-bold text-[#717786] uppercase tracking-wider">
-            Total Bookings: {bookings.length}
+          <div className="flex items-center gap-4">
+            <div className="text-xs font-bold text-[#717786] uppercase tracking-wider whitespace-nowrap">
+              Total Bookings: {bookings.length}
+            </div>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-300 hover:bg-slate-50 rounded-xl transition-all"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -76,12 +124,13 @@ const Bookings: React.FC = () => {
                 <th className="px-8 py-5 text-[11px] font-bold text-[#717786] uppercase tracking-widest">Travelers</th>
                 <th className="px-8 py-5 text-[11px] font-bold text-[#717786] uppercase tracking-widest">Total Price</th>
                 <th className="px-8 py-5 text-[11px] font-bold text-[#717786] uppercase tracking-widest">Status</th>
+                <th className="px-8 py-5 text-[11px] font-bold text-[#717786] uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-12 text-center text-slate-500">
+                  <td colSpan={5} className="px-8 py-12 text-center text-slate-500">
                     <div className="flex items-center justify-center gap-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#0059bb]"></div>
                       Loading bookings...
@@ -93,7 +142,7 @@ const Bookings: React.FC = () => {
                 b.tourist_id.toString().includes(searchQuery)
               ).length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-12 text-center text-slate-500">
+                  <td colSpan={5} className="px-8 py-12 text-center text-slate-500">
                     No bookings found
                   </td>
                 </tr>
@@ -127,6 +176,25 @@ const Bookings: React.FC = () => {
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(booking.status)}`}>
                         {booking.status}
                       </span>
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                      <button
+                        onClick={() => handleDeleteBooking(booking.booking_id)}
+                        disabled={deletingId === booking.booking_id}
+                        className="flex items-center gap-2 px-4 py-2 text-red-500 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 rounded-xl transition-all font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
+                      >
+                        {deletingId === booking.booking_id ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div>
+                            Deleting...
+                          </>
+                        ) : (
+                          <>
+                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                            Delete
+                          </>
+                        )}
+                      </button>
                     </td>
                   </tr>
                 ))
