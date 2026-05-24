@@ -6,6 +6,9 @@ import Packages from './pages/Packages'
 import Bookings from './pages/Bookings'
 import Payments from './pages/Payments'
 import Users from './pages/Users'
+import Hotels from './pages/Hotels'
+import Drivers from './pages/Drivers'
+import TourGuides from './pages/TourGuides'
 
 
 const App = () => {
@@ -20,6 +23,9 @@ const App = () => {
             <Route path="/" element={<div className="p-8">Dashboard Content Coming Soon</div>} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/destinations" element={<Destinations />} />
+            <Route path="/hotels" element={<Hotels />} />
+            <Route path="/drivers" element={<Drivers />} />
+            <Route path="/tour-guides" element={<TourGuides />} />
             <Route path="/packages" element={<Packages />} />
             <Route path="/payments" element={<Payments />} />
             <Route path="/users" element={<Users />} />
