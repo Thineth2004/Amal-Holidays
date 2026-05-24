@@ -19,8 +19,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await api.post('/api/auth/staff-login', credentials);
-      const { token, name, role } = response.data;
-      localStorage.setItem('token', token);
+      const { token, user: userFromApi } = response.data;
+      const name = userFromApi?.name || '';
+      const role = userFromApi?.role || '';
+      if (token) localStorage.setItem('token', token);
       localStorage.setItem('name', name);
       localStorage.setItem('role', role);
       setUser({ name, role });
