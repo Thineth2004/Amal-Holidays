@@ -53,8 +53,14 @@ const PackageDetails: React.FC = () => {
       return;
     }
 
-    toast.success(`Initializing secure checkout for ${tourPackage.title}!`);
-    navigate('/checkout', { state: { packageId: tourPackage.package_id } });
+    toast.success(`Initializing optional services selection!`);
+    navigate('/hotel-services', { 
+      state: { 
+        packageId: tourPackage.package_id,
+        price: tourPackage.price,
+        durationDays: Math.ceil((new Date(tourPackage.end_date).getTime() - new Date(tourPackage.start_date).getTime()) / (1000 * 60 * 60 * 24))
+      } 
+    });
   };
 
   if (isLoading) {
